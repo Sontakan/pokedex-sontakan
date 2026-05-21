@@ -1,93 +1,122 @@
-// Carregar estado do localStorage
-function loadState() {
-    const saved = localStorage.getItem('pokedex-joao');
-    return saved ? JSON.parse(saved) : {};
-}
+const API_URL = 'https://script.google.com/macros/s/AKfycby7gxgZXmayUv_d5toh2_loA8vEJxIZ_IwiSo92c5zTA5pwSBMa_kgUPIPgUUr-5G5rtA/exec'\;
 
-function saveState(state) {
-    localStorage.setItem('pokedex-joao', JSON.stringify(state));
-}
-
-let state = loadState();
+let POKEMON_DATA = [];
 let currentFilter = 'all';
 
-// Gerar filtros de geração
-const generations = [...new Set(POKEMON_DATA.map(p => p.gen))];
-const filtersDiv = document.getElementById('gen-filters');
-const allBtn = document.createElement('button');
-allBtn.textContent = 'Todas';
-allBtn.className = 'active';
-allBtn.onclick = () => filterGen('all');
-filtersDiv.appendChild(allBtn);
+// Carregar dados da planilha
+async function loadData() {
+    document.getElementById('pokemon-grid').innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:40px;">⏳ Carregando da planilha...</p>';
+    try {
+        const resp = await fetch(API_URL + '?action=getData');
+        POKEMON_DATA = await resp.json();
+        initFilters();
+        renderGrid();
+    } catch(e) {
+        document.getElementById('pokemon-grid').innerHTML = '<p style="text-align:center;grid-column:1/-1;color:red;">❌ Erro ao carregar. Tente recarregar.</p>';
+        console.error(e);
+    }
+}
 
-generations.forEach(gen => {
-    const btn = document.createElement('button');
-    btn.textContent = gen.replace(' - ', ': ');
-    btn.onclick = () => filterGen(gen);
-    btn.dataset.gen = gen;
-    filtersDiv.appendChild(btn);
-});
+// Salvar na planilha
+async function toggle(id, field, value) {
+    // Atualizar visual imediatamente
+    const p = POKEMON_DATA.find(p => p.id === id);
+    if (p) p[field] = value;
+    updateProgress();
+    
+    // Enviar para pconst API_URL = 'httd
+
+let POKEMON_DATA = [];
+let currentFilter = 'all';
+
+// Carregar dados da planilha
+async function loadData() {
+    docuue }),
+          let currentFilter = '-T
+// Carregt/plain' }
+        });
+    } catch(e) {
+          nsole.error('Erro ao salva    try {
+        const resp = await fetch(API_URL + '?action=getData');
+ rations = [...new Set(POKEMON_DATA.map(p => p.gen))];
+    const filtersDiv = document.getElementById('gen-filters');
+    filtersDiv.innerHTML = '';
+    
+    const allBtn = document.createElement('button');
+    allBtn.textContent = 'Todas';
+    allBtn.className = 'active';
+    allBtn.onclick = () => filterGen('all');
+    filtersDiv.appendChild(allBtn);
+
+    generations.forEach(gen => {
+        const btn = document.createElement('button');
+        btn.textContent = gen.replace(' - ', ': ');
+        btn.onclick = () => filterGen(gen);
+        btn.dataset.gen = gen;
+        filtersDiv.appendChild(btn);
+    });
+}
 
 // Renderizar grid
-function renderGrid(filter = 'all', search = '') {
+function renderGrid(filter, search) {
+    filter = filter || currentFilter;
+    search = search || '';
     const grid = document.getElementById('pokemon-grid');
     grid.innerHTML = '';
     
+    // Modo wishlist (somente leitura)
+    const urlParams = new URLSearchParams(window.location.search);
+    const missingFilter = urlParams.get('missing');
+    
     let filtered = POKEMON_DATA;
-    if (filter !== 'all') filtered = filtered.filter(p => p.gen === filter);
-    if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || String(p.id).includes(search));
+    if (missingFilter) {
+        filtered = filtered.filter(p => !p.bulk);
+        if (missingFilter !== 'all') {
+            const genMap = {'kanto':'1 - Kanto','johto':'2 - Johto','hoenn':'3 - Hoenn','sinnoh':'4 - Sinnoh','unova':'5 - Unova','kalos':'6 - Kalos','alola':'7 - Alola','galar':'8 - Galar','paldea':'9 - Paldea'};
+            const gen = genMap[missingFilter.toLowerCase()];
+            if (gen) filtered = filtered.filter(p => p.gen === gen);
+        }
+        document.querySelector('header h1').textContent = `📋 Faltam ${filtered.length} — ${missingFilter}`;
+        document.getElementById('gen-filters').style.display = 'none';
+    } else {
+        if (filter !== 'all') filtered = filtered.filter(p => p.gen === filter);
+        if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || String(p.id).includes(search));
+    }
     
     filtered.forEach(p => {
-        const key = String(p.id);
-        const hasBulk = state[key]?.bulk || p.bulk;
-        const hasUr = state[key]?.ur || p.ur;
-        
         const card = document.createElement('div');
-        card.className = `card ${hasBulk ? 'has-bulk' : ''} ${hasUr ? 'has-ur' : ''} ${hasBulk && hasUr ? 'has-both' : ''}`;
-        card.innerHTML = `
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" loading="lazy">
-            <div class="number">#${String(p.id).padStart(3, '0')}</div>
-            <div class="name" title="${p.name}">${p.name}</div>
-            <div class="checks">
-                <label><input type="checkbox" ${hasBulk ? 'checked' : ''} onchange="toggle(${p.id},'bulk',this.checked)">B</label>
-                <label><input type="checkbox" class="ur-check" ${hasUr ? 'checked' : ''} onchange="toggle(${p.id},'ur',this.checked)">UR</label>
-            </div>
-        `;
+        card.className = `card ${p.bulk ? 'has-bulk' : ''} ${p.ur ? 'has-ur' : ''}`;
+        
+        if (missingFilter) {
+            // Modo leitura - sem checkboxes
+            card.innerHTML = `
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" loading="lazy">
+                <div class="number">#${String(p.id).padStart(3, '0')}</div>
+                <div class="name" title="${p.name}">${p.name}</div>
+            `;
+        } else {
+            // Modo edição - com checkboxes
+            card.innerHTML = `
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" loading="lazy">
+                <div class="number">#${String(p.id).padStart(3, '0')}</div>
+                <div class="name" title="${p.name}">${p.name}</div>
+                <div class="checks">
+                    <label><input type="checkbox" ${p.bulk ? 'checked' : ''} onchange="toggle(${p.id},'bulk',this.checked)">B</label>
+                    <label><input type="checkbox" class="ur-check" ${p.ur ? 'checked' : ''} onchange="toggle(${p.id},'ur',this.checked)">UR</label>
+                </div>
+            `;
+        }
         grid.appendChild(card);
     });
     
     updateProgress();
 }
 
-function toggle(id, type, checked) {
-    const key = String(id);
-    if (!state[key]) state[key] = {};
-    state[key][type] = checked;
-    saveState(state);
-    updateProgress();
-    
-    // Atualizar visual do card
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        const cardId = card.querySelector('.number').textContent.replace('#', '').replace(/^0+/, '');
-        if (cardId === key) {
-            const hasBulk = state[key]?.bulk;
-            const hasUr = state[key]?.ur;
-            card.className = `card ${hasBulk ? 'has-bulk' : ''} ${hasUr ? 'has-ur' : ''} ${hasBulk && hasUr ? 'has-both' : ''}`;
-        }
-    });
-}
-
 function updateProgress() {
-    let bulkCount = 0, urCount = 0;
-    POKEMON_DATA.forEach(p => {
-        const key = String(p.id);
-        if (state[key]?.bulk || p.bulk) bulkCount++;
-        if (state[key]?.ur || p.ur) urCount++;
-    });
-    
     const total = POKEMON_DATA.length;
-    const pct = ((bulkCount / total) * 100).toFixed(1);
+    const bulkCount = POKEMON_DATA.filter(p => p.bulk).length;
+    const urCount = POKEMON_DATA.filter(p => p.ur).length;
+    const pct = total > 0 ? ((bulkCount / total) * 100).toFixed(1) : 0;
     
     document.getElementById('progress-fill').style.width = pct + '%';
     document.getElementById('progress-text').textContent = `${bulkCount} / ${total} (${pct}%)`;
@@ -99,64 +128,14 @@ function updateProgress() {
 function filterGen(gen) {
     currentFilter = gen;
     document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
-    if (gen === 'all') {
-        document.querySelector('.filters button').classList.add('active');
-    } else {
-        document.querySelector(`[data-gen="${gen}"]`)?.classList.add('active');
-    }
+    if (gen === 'all') document.querySelector('.filters button').classList.add('active');
+    else document.querySelector(`[data-gen="${gen}"]`)?.classList.add('active');
     renderGrid(gen, document.getElementById('search').value);
 }
 
-// Busca
 document.getElementById('search').addEventListener('input', (e) => {
     renderGrid(currentFilter, e.target.value);
 });
 
 // Inicializar
-renderGrid();
-
-// Modo wishlist (somente leitura) via URL params
-const urlParams = new URLSearchParams(window.location.search);
-const missingFilter = urlParams.get('missing');
-
-if (missingFilter) {
-    // Esconder checkboxes e mostrar só os faltantes
-    document.querySelector('header h1').textContent = '📋 Wishlist — Pokémon que faltam';
-    
-    // Sobrescrever renderGrid para modo leitura
-    function renderMissing() {
-        const grid = document.getElementById('pokemon-grid');
-        grid.innerHTML = '';
-        
-        let filtered = POKEMON_DATA.filter(p => {
-            const key = String(p.id);
-            const hasBulk = state[key]?.bulk || p.bulk;
-            return !hasBulk; // Só os que NÃO tem
-        });
-        
-        if (missingFilter !== 'all') {
-            const genMap = {'kanto':'1 - Kanto','johto':'2 - Johto','hoenn':'3 - Hoenn','sinnoh':'4 - Sinnoh','unova':'5 - Unova','kalos':'6 - Kalos','alola':'7 - Alola','galar':'8 - Galar','paldea':'9 - Paldea'};
-            const gen = genMap[missingFilter.toLowerCase()];
-            if (gen) filtered = filtered.filter(p => p.gen === gen);
-        }
-        
-        // Atualizar título
-        const genName = missingFilter === 'all' ? 'Todas as regiões' : missingFilter.charAt(0).toUpperCase() + missingFilter.slice(1);
-        document.querySelector('header h1').textContent = `📋 Faltam ${filtered.length} — ${genName}`;
-        
-        filtered.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" loading="lazy">
-                <div class="number">#${String(p.id).padStart(3, '0')}</div>
-                <div class="name" title="${p.name}">${p.name}</div>
-            `;
-            grid.appendChild(card);
-        });
-    }
-    
-    // Esconder filtros e search originais
-    document.getElementById('gen-filters').style.display = 'none';
-    renderMissing();
-}
+loadData();
