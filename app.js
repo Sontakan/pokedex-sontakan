@@ -114,3 +114,49 @@ document.getElementById('search').addEventListener('input', (e) => {
 
 // Inicializar
 renderGrid();
+
+// Modo wishlist (somente leitura) via URL params
+const urlParams = new URLSearchParams(window.location.search);
+const missingFilter = urlParams.get('missing');
+
+if (missingFilter) {
+    // Esconder checkboxes e mostrar só os faltantes
+    document.querySelector('header h1').textContent = '📋 Wishlist — Pokémon que faltam';
+    
+    // Sobrescrever renderGrid para modo leitura
+    function renderMissing() {
+        const grid = document.getElementById('pokemon-grid');
+        grid.innerHTML = '';
+        
+        let filtered = POKEMON_DATA.filter(p => {
+            const key = String(p.id);
+            const hasBulk = state[key]?.bulk || p.bulk;
+            return !hasBulk; // Só os que NÃO tem
+        });
+        
+        if (missingFilter !== 'all') {
+            const genMap = {'kanto':'1 - Kanto','johto':'2 - Johto','hoenn':'3 - Hoenn','sinnoh':'4 - Sinnoh','unova':'5 - Unova','kalos':'6 - Kalos','alola':'7 - Alola','galar':'8 - Galar','paldea':'9 - Paldea'};
+            const gen = genMap[missingFilter.toLowerCase()];
+            if (gen) filtered = filtered.filter(p => p.gen === gen);
+        }
+        
+        // Atualizar título
+        const genName = missingFilter === 'all' ? 'Todas as regiões' : missingFilter.charAt(0).toUpperCase() + missingFilter.slice(1);
+        document.querySelector('header h1').textContent = `📋 Faltam ${filtered.length} — ${genName}`;
+        
+        filtered.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" loading="lazy">
+                <div class="number">#${String(p.id).padStart(3, '0')}</div>
+                <div class="name" title="${p.name}">${p.name}</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+    
+    // Esconder filtros e search originais
+    document.getElementById('gen-filters').style.display = 'none';
+    renderMissing();
+}
