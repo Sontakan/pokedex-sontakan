@@ -7,7 +7,7 @@ let currentFilter = 'all';
 async function loadData() {
     document.getElementById('pokemon-grid').innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:40px;">⏳ Carregando da planilha...</p>';
     try {
-        const resp = await fetch(API_URL + '?action=getData');
+        const resp = await fetch(API_URL + '?action=getData', {redirect: 'follow'});
         POKEMON_DATA = await resp.json();
         initFilters();
         renderGrid();
@@ -37,7 +37,7 @@ async function loadData() {
         });
     } catch(e) {
           nsole.error('Erro ao salva    try {
-        const resp = await fetch(API_URL + '?action=getData');
+        const resp = await fetch(API_URL + '?action=getData', {redirect: 'follow'});
  rations = [...new Set(POKEMON_DATA.map(p => p.gen))];
     const filtersDiv = document.getElementById('gen-filters');
     filtersDiv.innerHTML = '';
