@@ -6,7 +6,7 @@
     <title>Pokédex - João</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; min-height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background: #2d3436; color: #eee; min-height: 100vh; }
         
         header { background: #e63946; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         header h1 { font-size: 1.8em; margin-bottom: 8px; }
@@ -21,21 +21,21 @@
         .filters button:hover { transform: scale(1.05); }
         
         .search { margin: 12px auto; max-width: 400px; }
-        .search input { width: 100%; padding: 10px 16px; border-radius: 20px; border: none; font-size: 14px; background: #ffffff; color: #333; outline: none; }
-        .search input::placeholder { color: #999; }
+        .search input { width: 100%; padding: 10px 16px; border-radius: 20px; border: none; font-size: 14px; background: #16213e; color: #eee; outline: none; }
+        .search input::placeholder { color: #666; }
         
         .stats { display: flex; gap: 16px; justify-content: center; margin: 8px 0; font-size: 13px; }
-        .stats span { background: #ffffff; padding: 4px 12px; border-radius: 12px; }
+        .stats span { background: #16213e; padding: 4px 12px; border-radius: 12px; }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; padding: 20px; max-width: 1400px; margin: 0 auto; }
         
-        .card { background: #ffffff; border-radius: 12px; padding: 10px; text-align: center; transition: all 0.2s; position: relative; border: 2px solid transparent; }
+        .card { background: #16213e; border-radius: 12px; padding: 10px; text-align: center; transition: all 0.2s; position: relative; border: 2px solid transparent; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
         .card.has-bulk { border-color: #4ecdc4; }
         .card.has-ur { border-color: #ffd700; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
         .card.has-both { border-color: #ffd700; background: linear-gradient(135deg, #16213e, #1a2a1a); }
         .card img { width: 72px; height: 72px; image-rendering: pixelated; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-        .card .number { font-size: 10px; color: #999; }
+        .card .number { font-size: 10px; color: #666; }
         .card .name { font-size: 11px; font-weight: bold; margin: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card .checks { display: flex; gap: 8px; justify-content: center; margin-top: 6px; }
         .card .checks label { font-size: 10px; display: flex; align-items: center; gap: 3px; cursor: pointer; }
@@ -45,7 +45,17 @@
         .gen-progress { padding: 20px; max-width: 800px; margin: 0 auto; }
         .gen-progress table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .gen-progress th, .gen-progress td { padding: 8px 12px; text-align: center; border-bottom: 1px solid #333; }
-        .gen-progress th { background: #ffffff; color: #4ecdc4; }
+        .gen-progress th { background: #16213e; color: #4ecdc4; }
+        
+        .wishlist-links { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 10px 0; }
+        .wishlist-links a { padding: 5px 12px; border-radius: 16px; font-size: 11px; font-weight: bold; background: #16213e; color: #4ecdc4; text-decoration: none; transition: all 0.2s; border: 1px solid #4ecdc4; }
+        .wishlist-links a:hover { background: #4ecdc4; color: #1a1a2e; }
+        
+        .mode-toggle { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0; }
+        .mode-toggle button { padding: 6px 16px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s; }
+        .mode-toggle button.active { background: #4ecdc4; color: #1a1a2e; }
+        .mode-toggle button:not(.active) { background: #333; color: #ccc; }
+        .mode-toggle button:hover { transform: scale(1.05); }
         
         .hidden { display: none !important; }
         
@@ -70,11 +80,26 @@
         </div>
         <div class="filters" id="gen-filters"></div>
         <div class="search"><input type="text" id="search" placeholder="🔍 Buscar Pokémon..."></div>
+        <div class="mode-toggle">
+            <button id="btn-edit" class="active" onclick="setMode('edit')">✏️ Edição</button>
+            <button id="btn-read" onclick="setMode('read')">👁️ Leitura</button>
+        </div>
+        <div class="wishlist-links">
+            <a href="?missing=all">📋 Todos faltantes</a>
+            <a href="?missing=kanto">Kanto</a>
+            <a href="?missing=johto">Johto</a>
+            <a href="?missing=hoenn">Hoenn</a>
+            <a href="?missing=sinnoh">Sinnoh</a>
+            <a href="?missing=unova">Unova</a>
+            <a href="?missing=kalos">Kalos</a>
+            <a href="?missing=alola">Alola</a>
+            <a href="?missing=galar">Galar</a>
+            <a href="?missing=paldea">Paldea</a>
+        </div>
     </header>
     
     <div class="grid" id="pokemon-grid"></div>
 
-    <script src="data.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
