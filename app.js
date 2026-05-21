@@ -72,8 +72,13 @@ function renderGrid(filter, search) {
     grid.innerHTML = "";
     var urlParams = new URLSearchParams(window.location.search);
     var missingFilter = urlParams.get("missing");
+    var urFilter = urlParams.get("ur");
     var filtered = POKEMON_DATA.slice();
-    if (missingFilter) {
+    if (urFilter) {
+        filtered = filtered.filter(function(p) { return p.ur; });
+        document.querySelector("header h1").textContent = "⭐ Coleção UR — " + filtered.length + " cartas";
+        document.getElementById("gen-filters").style.display = "none";
+    } else if (missingFilter) {
         filtered = filtered.filter(function(p) { return !p.bulk; });
         var genMap = {kanto:"1 - Kanto",johto:"2 - Johto",hoenn:"3 - Hoenn",sinnoh:"4 - Sinnoh",unova:"5 - Unova",kalos:"6 - Kalos",alola:"7 - Alola",galar:"8 - Galar",paldea:"9 - Paldea"};
         if (missingFilter !== "all" && genMap[missingFilter.toLowerCase()]) {
@@ -92,7 +97,7 @@ function renderGrid(filter, search) {
         var html = "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + p.id + ".png' loading='lazy'>";
         html += "<div class='number'>#" + String(p.id).padStart(3, "0") + "</div>";
         html += "<div class='name'>" + p.name + "</div>";
-        if (!missingFilter && currentMode === "edit") {
+        if (!missingFilter && !urFilter && currentMode === "edit") {
             html += "<div class='checks'>";
             html += "<label><input type='checkbox' " + (p.bulk ? "checked" : "") + " onchange='toggle(" + p.id + ",\"bulk\",this.checked)'>B</label>";
             html += "<label><input type='checkbox' class='ur-check' " + (p.ur ? "checked" : "") + " onchange='toggle(" + p.id + ",\"ur\",this.checked)'>UR</label>";
@@ -136,10 +141,10 @@ function setMode(mode) {
     renderGrid(currentFilter, document.getElementById("search").value);
 }
 
-// Se URL tem ?missing, esconde toggle e força modo leitura
+// Se URL tem ?missing ou ?ur, esconde toggle e força modo leitura
 (function() {
     var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("missing")) {
+    if (urlParams.get("missing") || urlParams.get("ur")) {
         currentMode = "read";
         var toggle = document.querySelector(".mode-toggle");
         if (toggle) toggle.style.display = "none";
