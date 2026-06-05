@@ -6,66 +6,66 @@
     <title>Pokédex Admin</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; min-height: 100vh; }
         
         /* Login */
-        .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #1a1a2e; display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-box { background: #16213e; padding: 40px; border-radius: 16px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
-        .login-box h2 { margin-bottom: 20px; color: #4ecdc4; }
-        .login-box input { padding: 12px 20px; border-radius: 8px; border: none; font-size: 16px; width: 250px; background: #0f3460; color: #eee; outline: none; }
-        .login-box input::placeholder { color: #666; }
-        .login-box button { margin-top: 16px; padding: 12px 32px; border: none; border-radius: 8px; background: #4ecdc4; color: #1a1a2e; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .login-box button:hover { background: #44bd32; }
-        .login-box .error { color: #e63946; margin-top: 12px; font-size: 13px; display: none; }
+        .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #f5f5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-box { background: #fff; padding: 40px; border-radius: 16px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,0.1); border: 2px solid #e8e8e8; }
+        .login-box h2 { margin-bottom: 20px; color: #dc2626; font-size: 1.4em; }
+        .login-box input { padding: 12px 20px; border-radius: 20px; border: 2px solid #ddd; font-size: 16px; width: 250px; outline: none; }
+        .login-box input:focus { border-color: #dc2626; }
+        .login-box button { margin-top: 16px; padding: 12px 32px; border: none; border-radius: 20px; background: #dc2626; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
+        .login-box button:hover { background: #b91c1c; }
+        .login-box .error { color: #dc2626; margin-top: 12px; font-size: 13px; display: none; }
 
         /* App */
         .app { display: none; }
         .app.visible { display: block; }
 
-        header { background: #0f3460; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-        header h1 { font-size: 1.5em; margin-bottom: 8px; color: #4ecdc4; }
+        header { background: #dc2626; padding: 16px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        header h1 { font-size: 1.3em; font-weight: 700; color: #fff; }
         
-        .progress-bar { background: #333; border-radius: 20px; height: 24px; margin: 8px auto; max-width: 600px; overflow: hidden; position: relative; }
-        .progress-fill { background: linear-gradient(90deg, #4ecdc4, #44bd32); height: 100%; transition: width 0.5s; border-radius: 20px; }
-        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .progress-bar { background: rgba(0,0,0,0.3); border-radius: 20px; height: 10px; width: 200px; overflow: hidden; }
+        .progress-fill { background: #fbbf24; height: 100%; border-radius: 20px; transition: width 0.5s; }
         
-        .stats { display: flex; gap: 16px; justify-content: center; margin: 8px 0; font-size: 13px; }
-        .stats span { background: #1a1a2e; padding: 4px 12px; border-radius: 12px; }
-        
-        .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
-        .filters button { padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; background: #1a1a2e; color: #ccc; transition: all 0.2s; }
-        .filters button.active { background: #4ecdc4; color: #1a1a2e; }
-        .filters button:hover { transform: scale(1.05); }
-        
-        .search { margin: 12px auto; max-width: 400px; }
-        .search input { width: 100%; padding: 10px 16px; border-radius: 20px; border: none; font-size: 14px; background: #1a1a2e; color: #eee; outline: none; }
-        .search input::placeholder { color: #666; }
+        .stats { display: flex; gap: 14px; font-size: 13px; color: rgba(255,255,255,0.9); }
 
-        .toolbar { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
-        .toolbar a { padding: 6px 14px; border-radius: 16px; font-size: 11px; font-weight: bold; background: #e63946; color: white; text-decoration: none; }
-        .toolbar button { padding: 6px 14px; border-radius: 16px; font-size: 11px; font-weight: bold; background: #e63946; color: white; border: none; cursor: pointer; }
+        .toolbar { display: flex; gap: 8px; }
+        .toolbar a, .toolbar button { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 2px solid rgba(255,255,255,0.4); background: transparent; color: white; cursor: pointer; }
+        .toolbar a:hover, .toolbar button:hover { background: rgba(255,255,255,0.2); }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .controls { max-width: 1200px; margin: 16px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .search input { padding: 8px 16px; border-radius: 20px; border: 2px solid #ddd; font-size: 14px; width: 220px; outline: none; }
+        .search input:focus { border-color: #dc2626; }
         
-        .card { background: #16213e; border-radius: 12px; padding: 10px; text-align: center; transition: all 0.2s; border: 2px solid transparent; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
-        .card.has-bulk { border-color: #4ecdc4; }
-        .card.has-ur { border-color: #ffd700; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
-        .card img { width: 72px; height: 72px; image-rendering: pixelated; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-        .card .number { font-size: 10px; color: #666; }
-        .card .name { font-size: 11px; font-weight: bold; margin: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card .checks { display: flex; gap: 8px; justify-content: center; margin-top: 6px; }
-        .card .checks label { font-size: 10px; display: flex; align-items: center; gap: 3px; cursor: pointer; }
-        .card .checks input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; accent-color: #4ecdc4; }
-        .card .checks .ur-check { accent-color: #ffd700; }
+        .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filters button { padding: 5px 12px; border: 2px solid #ddd; border-radius: 20px; cursor: pointer; font-size: 12px; background: #fff; color: #555; font-weight: 600; transition: all 0.15s; }
+        .filters button.active { background: #dc2626; color: white; border-color: #dc2626; }
+        .filters button:hover { border-color: #dc2626; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        
+        .card { background: #fff; border-radius: 16px; padding: 16px 10px; text-align: center; border: 2px solid #e8e8e8; transition: all 0.2s; position: relative; }
+        .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
+        .card.has-bulk { border-color: #10b981; background: linear-gradient(180deg, #ecfdf5 0%, #fff 30%); }
+        .card.has-ur { border-color: #f59e0b; background: linear-gradient(180deg, #fffbeb 0%, #fff 30%); }
+        .card img { width: 88px; height: 88px; image-rendering: pixelated; }
+        .card .number { font-size: 10px; color: #aaa; font-weight: 600; }
+        .card .name { font-size: 13px; font-weight: 700; color: #333; margin: 4px 0; }
+        .card .checks { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
+        .card .checks label { font-size: 11px; display: flex; align-items: center; gap: 3px; color: #666; cursor: pointer; font-weight: 600; }
+        .card .checks input[type="checkbox"] { width: 16px; height: 16px; accent-color: #10b981; cursor: pointer; }
+        .card .checks .ur-check { accent-color: #f59e0b; }
 
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #4ecdc4; color: #1a1a2e; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 1000; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .toast.show { opacity: 1; }
         
         @media (max-width: 600px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; padding: 10px; }
-            .card img { width: 56px; height: 56px; }
-            header h1 { font-size: 1.2em; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 12px; }
+            .card img { width: 64px; height: 64px; }
+            header h1 { font-size: 1.1em; }
+            .header-inner { justify-content: center; }
         }
     </style>
 </head>
@@ -84,24 +84,26 @@
     <!-- App -->
     <div class="app" id="app">
         <header>
-            <h1>🔧 Admin — Pokédex</h1>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-                <div class="progress-text" id="progress-text">0 / 1025</div>
-            </div>
-            <div class="stats">
-                <span>📦 Bulk: <strong id="stat-bulk">0</strong></span>
-                <span>⭐ UR: <strong id="stat-ur">0</strong></span>
-                <span>❌ Faltam: <strong id="stat-missing">1025</strong></span>
-            </div>
-            <div class="filters" id="gen-filters"></div>
-            <div class="search"><input type="text" id="search" placeholder="🔍 Buscar Pokémon..."></div>
-            <div class="toolbar">
-                <a href="index.html">👁️ Ver página pública</a>
-                <button onclick="doLogout()">🚪 Sair</button>
+            <div class="header-inner">
+                <h1>🔧 Admin Pokédex</h1>
+                <div class="stats">
+                    <span>📦 Bulk: <strong id="stat-bulk">0</strong></span>
+                    <span>⭐ UR: <strong id="stat-ur">0</strong></span>
+                    <span>❌ Faltam: <strong id="stat-missing">0</strong></span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+                <div class="toolbar">
+                    <a href="index.html">👁️ Pública</a>
+                    <button onclick="doLogout()">Sair</button>
+                </div>
             </div>
         </header>
         
+        <div class="controls">
+            <div class="search"><input type="text" id="search" placeholder="Buscar Pokémon..."></div>
+            <div class="filters" id="gen-filters"></div>
+        </div>
+
         <div class="grid" id="pokemon-grid"></div>
     </div>
 
@@ -114,7 +116,6 @@
     var POKEMON_DATA = [];
     var currentFilter = "all";
 
-    // Auth
     async function hashPassword(pass) {
         var encoder = new TextEncoder();
         var data = encoder.encode(pass);
@@ -151,7 +152,6 @@
         }
     }
 
-    // Toast
     function showToast(msg) {
         var t = document.getElementById("toast");
         t.textContent = msg;
@@ -159,7 +159,6 @@
         setTimeout(function() { t.classList.remove("show"); }, 2000);
     }
 
-    // Data
     function parseCSV(csv) {
         var lines = csv.split("\n");
         var data = [];
@@ -179,7 +178,7 @@
     }
 
     async function loadData() {
-        document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;padding:40px'>Carregando...</p>";
+        document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;padding:40px;color:#999'>Carregando...</p>";
         try {
             var resp = await fetch(CSV_URL);
             var csv = await resp.text();
@@ -251,7 +250,6 @@
         var urCount = POKEMON_DATA.filter(function(p) { return p.ur; }).length;
         var pct = total > 0 ? ((bulkCount / total) * 100).toFixed(1) : 0;
         document.getElementById("progress-fill").style.width = pct + "%";
-        document.getElementById("progress-text").textContent = bulkCount + " / " + total + " (" + pct + "%)";
         document.getElementById("stat-bulk").textContent = bulkCount;
         document.getElementById("stat-ur").textContent = urCount;
         document.getElementById("stat-missing").textContent = total - bulkCount;

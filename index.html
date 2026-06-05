@@ -6,71 +6,72 @@
     <title>Pokédex - João | Wishlist</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #ffffff; color: #333; min-height: 100vh; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; min-height: 100vh; }
         
-        header { background: #e63946; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); color: white; }
-        header h1 { font-size: 1.8em; margin-bottom: 8px; }
+        header { background: #dc2626; padding: 16px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        header h1 { font-size: 1.3em; font-weight: 700; color: #fff; }
         
-        .progress-bar { background: #333; border-radius: 20px; height: 24px; margin: 8px auto; max-width: 600px; overflow: hidden; position: relative; }
-        .progress-fill { background: linear-gradient(90deg, #4ecdc4, #44bd32); height: 100%; transition: width 0.5s; border-radius: 20px; }
-        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .progress-bar { background: rgba(0,0,0,0.3); border-radius: 20px; height: 10px; width: 200px; overflow: hidden; }
+        .progress-fill { background: #fbbf24; height: 100%; border-radius: 20px; transition: width 0.5s; }
         
-        .stats { display: flex; gap: 16px; justify-content: center; margin: 8px 0; font-size: 13px; }
-        .stats span { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 12px; }
-        
-        .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
-        .filters button { padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; background: rgba(255,255,255,0.2); color: white; transition: all 0.2s; }
-        .filters button.active { background: #4ecdc4; color: #1a1a2e; }
-        .filters button:hover { transform: scale(1.05); }
-        
-        .search { margin: 12px auto; max-width: 400px; }
-        .search input { width: 100%; padding: 10px 16px; border-radius: 20px; border: none; font-size: 14px; background: rgba(255,255,255,0.9); color: #333; outline: none; }
-        .search input::placeholder { color: #999; }
+        .stats { display: flex; gap: 14px; font-size: 13px; color: rgba(255,255,255,0.9); }
 
-        .view-links { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 10px 0; }
-        .view-links a { padding: 5px 12px; border-radius: 16px; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.2); color: white; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.4); }
-        .view-links a:hover { background: white; color: #e63946; }
-        .view-links a.active { background: white; color: #e63946; }
+        .view-links { display: flex; gap: 6px; }
+        .view-links a { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 2px solid rgba(255,255,255,0.4); color: white; transition: all 0.15s; }
+        .view-links a:hover, .view-links a.active { background: white; color: #dc2626; border-color: white; }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .controls { max-width: 1200px; margin: 16px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .search input { padding: 8px 16px; border-radius: 20px; border: 2px solid #ddd; font-size: 14px; width: 220px; outline: none; }
+        .search input:focus { border-color: #dc2626; }
         
-        .card { background: #ffffff; border-radius: 12px; padding: 10px; text-align: center; transition: all 0.2s; position: relative; border: 2px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
-        .card img { width: 96px; height: 96px; image-rendering: pixelated; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
-        .card .number { font-size: 10px; color: #999; }
-        .card .name { font-size: 11px; font-weight: bold; margin: 4px 0; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filters button { padding: 5px 12px; border: 2px solid #ddd; border-radius: 20px; cursor: pointer; font-size: 12px; background: #fff; color: #555; font-weight: 600; transition: all 0.15s; }
+        .filters button.active { background: #dc2626; color: white; border-color: #dc2626; }
+        .filters button:hover { border-color: #dc2626; }
         
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        
+        .card { background: #fff; border-radius: 16px; padding: 16px 10px; text-align: center; border: 2px solid #e8e8e8; transition: all 0.2s; }
+        .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
+        .card img { width: 88px; height: 88px; image-rendering: pixelated; }
+        .card .number { font-size: 10px; color: #aaa; font-weight: 600; }
+        .card .name { font-size: 13px; font-weight: 700; color: #333; margin: 4px 0; }
+
         .empty-state { text-align: center; padding: 60px 20px; grid-column: 1/-1; color: #999; }
         .empty-state h2 { margin-bottom: 8px; }
-
+        
         @media (max-width: 600px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; padding: 10px; }
-            .card img { width: 72px; height: 72px; }
-            header h1 { font-size: 1.3em; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 12px; }
+            .card img { width: 64px; height: 64px; }
+            header h1 { font-size: 1.1em; }
+            .header-inner { justify-content: center; }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>🎮 Pokédex — João</h1>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-            <div class="progress-text" id="progress-text">0 / 1025</div>
-        </div>
-        <div class="stats">
-            <span>📦 Bulk: <strong id="stat-bulk">0</strong></span>
-            <span>⭐ UR: <strong id="stat-ur">0</strong></span>
-            <span>❌ Faltam: <strong id="stat-missing">1025</strong></span>
-        </div>
-        <div class="filters" id="gen-filters"></div>
-        <div class="search"><input type="text" id="search" placeholder="🔍 Buscar Pokémon..."></div>
-        <div class="view-links">
-            <a href="?view=missing" id="link-missing">📋 Faltam</a>
-            <a href="?view=ur" id="link-ur">⭐ Minhas UR</a>
-            <a href="?view=all" id="link-all">🔢 Todos</a>
+        <div class="header-inner">
+            <h1 id="page-title">📋 Pokédex — João</h1>
+            <div class="stats">
+                <span>📦 <strong id="stat-bulk">0</strong></span>
+                <span>⭐ <strong id="stat-ur">0</strong></span>
+                <span>❌ <strong id="stat-missing">0</strong> faltam</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="view-links">
+                <a href="?view=missing" id="link-missing">📋 Faltam</a>
+                <a href="?view=ur" id="link-ur">⭐ UR</a>
+                <a href="?view=all" id="link-all">🔢 Todos</a>
+            </div>
         </div>
     </header>
     
+    <div class="controls">
+        <div class="search"><input type="text" id="search" placeholder="Buscar Pokémon..."></div>
+        <div class="filters" id="gen-filters"></div>
+    </div>
+
     <div class="grid" id="pokemon-grid"></div>
 
     <script>
@@ -153,19 +154,19 @@
 
         if (view === "missing") {
             filtered = filtered.filter(function(p) { return !p.bulk; });
-            document.querySelector("header h1").textContent = "📋 Faltam " + filtered.length + " Pokémon";
+            document.getElementById("page-title").textContent = "📋 Faltam " + filtered.length + " Pokémon";
         } else if (view === "ur") {
             filtered = filtered.filter(function(p) { return p.ur; });
-            document.querySelector("header h1").textContent = "⭐ Coleção UR — " + filtered.length + " cartas";
+            document.getElementById("page-title").textContent = "⭐ Coleção UR — " + filtered.length + " cartas";
         } else {
-            document.querySelector("header h1").textContent = "🎮 Pokédex — João";
+            document.getElementById("page-title").textContent = "🔢 Pokédex — João (" + POKEMON_DATA.length + ")";
         }
 
         if (filter !== "all") filtered = filtered.filter(function(p) { return p.gen === filter; });
         if (search) filtered = filtered.filter(function(p) { return p.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 || String(p.id).indexOf(search) !== -1; });
 
         if (filtered.length === 0) {
-            grid.innerHTML = "<div class='empty-state'><h2>🎉 Nenhum Pokémon aqui!</h2><p>Coleção completa nesta categoria.</p></div>";
+            grid.innerHTML = "<div class='empty-state'><h2>🎉 Completo!</h2><p>Nenhum Pokémon faltando aqui.</p></div>";
             updateProgress();
             return;
         }
@@ -188,7 +189,6 @@
         var urCount = POKEMON_DATA.filter(function(p) { return p.ur; }).length;
         var pct = total > 0 ? ((bulkCount / total) * 100).toFixed(1) : 0;
         document.getElementById("progress-fill").style.width = pct + "%";
-        document.getElementById("progress-text").textContent = bulkCount + " / " + total + " (" + pct + "%)";
         document.getElementById("stat-bulk").textContent = bulkCount;
         document.getElementById("stat-ur").textContent = urCount;
         document.getElementById("stat-missing").textContent = total - bulkCount;
