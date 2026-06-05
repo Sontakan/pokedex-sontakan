@@ -53,6 +53,26 @@
         .card img { width: 88px; height: 88px; image-rendering: pixelated; }
         .card .number { font-size: 10px; color: #aaa; font-weight: 600; }
         .card .name { font-size: 13px; font-weight: 700; color: #333; margin: 4px 0; }
+        .types { display: flex; gap: 4px; justify-content: center; margin-top: 4px; flex-wrap: wrap; }
+        .type-badge { padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+        .type-grass { background: #7ac74c; }
+        .type-poison { background: #a33ea1; }
+        .type-fire { background: #ee8130; }
+        .type-water { background: #6390f0; }
+        .type-electric { background: #f7d02c; color: #333; }
+        .type-psychic { background: #f95587; }
+        .type-dark { background: #705746; }
+        .type-normal { background: #a8a77a; }
+        .type-flying { background: #a98ff3; }
+        .type-bug { background: #a6b91a; }
+        .type-dragon { background: #6f35fc; }
+        .type-ice { background: #96d9d6; color: #333; }
+        .type-fairy { background: #d685ad; }
+        .type-fighting { background: #c22e28; }
+        .type-rock { background: #b6a136; }
+        .type-ground { background: #e2bf65; color: #333; }
+        .type-ghost { background: #735797; }
+        .type-steel { background: #b7b7ce; color: #333; }
         .card .checks { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
         .card .checks label { font-size: 11px; display: flex; align-items: center; gap: 3px; color: #666; cursor: pointer; font-weight: 600; }
         .card .checks input[type="checkbox"] { width: 16px; height: 16px; accent-color: #10b981; cursor: pointer; }
@@ -109,6 +129,7 @@
 
     <div class="toast" id="toast"></div>
 
+    <script src="types.js"></script>
     <script>
     var PASS_HASH = "2cda89d92593bf1f8be298045e2468a995950027b18f9d181fe42d4f0f6d03b9";
     var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTiwmUKZhkNoELu50kImXMH-S9zS_oXs-KjM0tmebM-ZRccAoYPj8DyHZmxQ5EZsviGbBbIKM2c3jpE/pub?gid=0&single=true&output=csv";
@@ -234,6 +255,10 @@
             var html = "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + p.id + ".png' loading='lazy'>";
             html += "<div class='number'>#" + String(p.id).padStart(3, "0") + "</div>";
             html += "<div class='name'>" + p.name + "</div>";
+            var types = POKEMON_TYPES[p.id] || [];
+            html += "<div class='types'>";
+            types.forEach(function(t) { html += "<span class='type-badge type-" + t + "'>" + t + "</span>"; });
+            html += "</div>";
             html += "<div class='checks'>";
             html += "<label><input type='checkbox' " + (p.bulk ? "checked" : "") + " onchange='toggle(" + p.id + ",\"bulk\",this.checked)'>B</label>";
             html += "<label><input type='checkbox' class='ur-check' " + (p.ur ? "checked" : "") + " onchange='toggle(" + p.id + ",\"ur\",this.checked)'>UR</label>";

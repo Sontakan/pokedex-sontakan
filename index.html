@@ -37,6 +37,26 @@
         .card img { width: 88px; height: 88px; image-rendering: pixelated; }
         .card .number { font-size: 10px; color: #aaa; font-weight: 600; }
         .card .name { font-size: 13px; font-weight: 700; color: #333; margin: 4px 0; }
+        .types { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+        .type-badge { padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+        .type-grass { background: #7ac74c; }
+        .type-poison { background: #a33ea1; }
+        .type-fire { background: #ee8130; }
+        .type-water { background: #6390f0; }
+        .type-electric { background: #f7d02c; color: #333; }
+        .type-psychic { background: #f95587; }
+        .type-dark { background: #705746; }
+        .type-normal { background: #a8a77a; }
+        .type-flying { background: #a98ff3; }
+        .type-bug { background: #a6b91a; }
+        .type-dragon { background: #6f35fc; }
+        .type-ice { background: #96d9d6; color: #333; }
+        .type-fairy { background: #d685ad; }
+        .type-fighting { background: #c22e28; }
+        .type-rock { background: #b6a136; }
+        .type-ground { background: #e2bf65; color: #333; }
+        .type-ghost { background: #735797; }
+        .type-steel { background: #b7b7ce; color: #333; }
 
         .empty-state { text-align: center; padding: 60px 20px; grid-column: 1/-1; color: #999; }
         .empty-state h2 { margin-bottom: 8px; }
@@ -74,6 +94,7 @@
 
     <div class="grid" id="pokemon-grid"></div>
 
+    <script src="types.js"></script>
     <script>
     var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTiwmUKZhkNoELu50kImXMH-S9zS_oXs-KjM0tmebM-ZRccAoYPj8DyHZmxQ5EZsviGbBbIKM2c3jpE/pub?gid=0&single=true&output=csv";
     var POKEMON_DATA = [];
@@ -177,6 +198,10 @@
             var html = "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + p.id + ".png' loading='lazy'>";
             html += "<div class='number'>#" + String(p.id).padStart(3, "0") + "</div>";
             html += "<div class='name'>" + p.name + "</div>";
+            var types = POKEMON_TYPES[p.id] || [];
+            html += "<div class='types'>";
+            types.forEach(function(t) { html += "<span class='type-badge type-" + t + "'>" + t + "</span>"; });
+            html += "</div>";
             card.innerHTML = html;
             grid.appendChild(card);
         });
