@@ -3,62 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex - João</title>
+    <title>Pokédex - João | Wishlist</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: #ffffff; color: #333; min-height: 100vh; }
         
-        header { background: #e63946; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        header { background: #e63946; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); color: white; }
         header h1 { font-size: 1.8em; margin-bottom: 8px; }
         
         .progress-bar { background: #333; border-radius: 20px; height: 24px; margin: 8px auto; max-width: 600px; overflow: hidden; position: relative; }
         .progress-fill { background: linear-gradient(90deg, #4ecdc4, #44bd32); height: 100%; transition: width 0.5s; border-radius: 20px; }
         .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         
+        .stats { display: flex; gap: 16px; justify-content: center; margin: 8px 0; font-size: 13px; }
+        .stats span { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 12px; }
+        
         .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
-        .filters button { padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; background: #333; color: #ccc; transition: all 0.2s; }
+        .filters button { padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; background: rgba(255,255,255,0.2); color: white; transition: all 0.2s; }
         .filters button.active { background: #4ecdc4; color: #1a1a2e; }
         .filters button:hover { transform: scale(1.05); }
         
         .search { margin: 12px auto; max-width: 400px; }
-        .search input { width: 100%; padding: 10px 16px; border-radius: 20px; border: 1px solid #ddd; font-size: 14px; background: #fff; color: #333; outline: none; }
+        .search input { width: 100%; padding: 10px 16px; border-radius: 20px; border: none; font-size: 14px; background: rgba(255,255,255,0.9); color: #333; outline: none; }
         .search input::placeholder { color: #999; }
-        
-        .stats { display: flex; gap: 16px; justify-content: center; margin: 8px 0; font-size: 13px; }
-        .stats span { background: #f0f0f0; color: #333; padding: 4px 12px; border-radius: 12px; }
+
+        .view-links { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 10px 0; }
+        .view-links a { padding: 5px 12px; border-radius: 16px; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.2); color: white; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.4); }
+        .view-links a:hover { background: white; color: #e63946; }
+        .view-links a.active { background: white; color: #e63946; }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; padding: 20px; max-width: 1400px; margin: 0 auto; }
         
-        .card { background: #ffffff; border-radius: 12px; padding: 10px; text-align: center; transition: all 0.2s; position: relative; border: 2px solid transparent; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
-        .card.has-bulk { border-color: #4ecdc4; }
-        .card.has-ur { border-color: #ffd700; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
-        .card.has-both { border-color: #ffd700; background: linear-gradient(135deg, #16213e, #1a2a1a); }
-        .card img { width: 96px; height: 96px; image-rendering: pixelated; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .card { background: #ffffff; border-radius: 12px; padding: 10px; text-align: center; transition: all 0.2s; position: relative; border: 2px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+        .card img { width: 96px; height: 96px; image-rendering: pixelated; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
         .card .number { font-size: 10px; color: #999; }
         .card .name { font-size: 11px; font-weight: bold; margin: 4px 0; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card .checks { display: flex; gap: 8px; justify-content: center; margin-top: 6px; }
-        .card .checks label { font-size: 10px; display: flex; align-items: center; gap: 3px; cursor: pointer; color: #555; }
-        .card .checks input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; accent-color: #4ecdc4; }
-        .card .checks .ur-check { accent-color: #ffd700; }
         
-        .gen-progress { padding: 20px; max-width: 800px; margin: 0 auto; }
-        .gen-progress table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .gen-progress th, .gen-progress td { padding: 8px 12px; text-align: center; border-bottom: 1px solid #333; }
-        .gen-progress th { background: #16213e; color: #4ecdc4; }
-        
-        .wishlist-links { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 10px 0; }
-        .wishlist-links a { padding: 5px 12px; border-radius: 16px; font-size: 11px; font-weight: bold; background: #16213e; color: #4ecdc4; text-decoration: none; transition: all 0.2s; border: 1px solid #4ecdc4; }
-        .wishlist-links a:hover { background: #4ecdc4; color: #1a1a2e; }
-        
-        .mode-toggle { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0; }
-        .mode-toggle button { padding: 6px 16px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s; }
-        .mode-toggle button.active { background: #4ecdc4; color: #1a1a2e; }
-        .mode-toggle button:not(.active) { background: #333; color: #ccc; }
-        .mode-toggle button:hover { transform: scale(1.05); }
-        
-        .hidden { display: none !important; }
-        
+        .empty-state { text-align: center; padding: 60px 20px; grid-column: 1/-1; color: #999; }
+        .empty-state h2 { margin-bottom: 8px; }
+
         @media (max-width: 600px) {
             .grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; padding: 10px; }
             .card img { width: 72px; height: 72px; }
@@ -80,27 +64,150 @@
         </div>
         <div class="filters" id="gen-filters"></div>
         <div class="search"><input type="text" id="search" placeholder="🔍 Buscar Pokémon..."></div>
-        <div class="mode-toggle">
-            <button id="btn-edit" class="active" onclick="setMode('edit')">✏️ Edição</button>
-            <button id="btn-read" onclick="setMode('read')">👁️ Leitura</button>
-        </div>
-        <div class="wishlist-links">
-            <a href="?ur=true">⭐ Minhas UR</a>
-            <a href="?missing=all">📋 Todos faltantes</a>
-            <a href="?missing=kanto">Kanto</a>
-            <a href="?missing=johto">Johto</a>
-            <a href="?missing=hoenn">Hoenn</a>
-            <a href="?missing=sinnoh">Sinnoh</a>
-            <a href="?missing=unova">Unova</a>
-            <a href="?missing=kalos">Kalos</a>
-            <a href="?missing=alola">Alola</a>
-            <a href="?missing=galar">Galar</a>
-            <a href="?missing=paldea">Paldea</a>
+        <div class="view-links">
+            <a href="?view=missing" id="link-missing">📋 Faltam</a>
+            <a href="?view=ur" id="link-ur">⭐ Minhas UR</a>
+            <a href="?view=all" id="link-all">🔢 Todos</a>
         </div>
     </header>
     
     <div class="grid" id="pokemon-grid"></div>
 
-    <script src="app.js"></script>
+    <script>
+    var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTiwmUKZhkNoELu50kImXMH-S9zS_oXs-KjM0tmebM-ZRccAoYPj8DyHZmxQ5EZsviGbBbIKM2c3jpE/pub?gid=0&single=true&output=csv";
+    var POKEMON_DATA = [];
+    var currentFilter = "all";
+
+    function parseCSV(csv) {
+        var lines = csv.split("\n");
+        var data = [];
+        for (var i = 1; i < lines.length; i++) {
+            var cols = lines[i].split(",");
+            if (cols.length >= 5 && cols[1] && !isNaN(cols[1])) {
+                data.push({
+                    name: cols[0].replace(/"/g, "").trim(),
+                    id: parseInt(cols[1]),
+                    gen: cols[2].replace(/"/g, "").trim(),
+                    bulk: cols[3].trim() === "TRUE",
+                    ur: cols[4].trim() === "TRUE"
+                });
+            }
+        }
+        return data;
+    }
+
+    function getView() {
+        var params = new URLSearchParams(window.location.search);
+        return params.get("view") || "missing";
+    }
+
+    async function loadData() {
+        document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;padding:40px;color:#999'>Carregando...</p>";
+        try {
+            var resp = await fetch(CSV_URL);
+            var csv = await resp.text();
+            POKEMON_DATA = parseCSV(csv);
+            highlightActiveLink();
+            initFilters();
+            renderGrid();
+        } catch(e) {
+            document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;color:red'>Erro ao carregar dados</p>";
+        }
+    }
+
+    function highlightActiveLink() {
+        var view = getView();
+        document.querySelectorAll(".view-links a").forEach(function(a) { a.classList.remove("active"); });
+        var el = document.getElementById("link-" + view);
+        if (el) el.classList.add("active");
+    }
+
+    function initFilters() {
+        var view = getView();
+        if (view === "ur") { document.getElementById("gen-filters").style.display = "none"; return; }
+        var gens = [];
+        POKEMON_DATA.forEach(function(p) { if (gens.indexOf(p.gen) === -1) gens.push(p.gen); });
+        var div = document.getElementById("gen-filters");
+        div.innerHTML = "";
+        var btn = document.createElement("button");
+        btn.textContent = "Todas";
+        btn.className = "active";
+        btn.onclick = function() { filterGen("all"); };
+        div.appendChild(btn);
+        gens.forEach(function(gen) {
+            var b = document.createElement("button");
+            b.textContent = gen.replace(" - ", ": ");
+            b.onclick = function() { filterGen(gen); };
+            b.setAttribute("data-gen", gen);
+            div.appendChild(b);
+        });
+    }
+
+    function renderGrid(filter, search) {
+        filter = filter || currentFilter;
+        search = search || "";
+        var grid = document.getElementById("pokemon-grid");
+        grid.innerHTML = "";
+        var view = getView();
+        var filtered = POKEMON_DATA.slice();
+
+        if (view === "missing") {
+            filtered = filtered.filter(function(p) { return !p.bulk; });
+            document.querySelector("header h1").textContent = "📋 Faltam " + filtered.length + " Pokémon";
+        } else if (view === "ur") {
+            filtered = filtered.filter(function(p) { return p.ur; });
+            document.querySelector("header h1").textContent = "⭐ Coleção UR — " + filtered.length + " cartas";
+        } else {
+            document.querySelector("header h1").textContent = "🎮 Pokédex — João";
+        }
+
+        if (filter !== "all") filtered = filtered.filter(function(p) { return p.gen === filter; });
+        if (search) filtered = filtered.filter(function(p) { return p.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 || String(p.id).indexOf(search) !== -1; });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = "<div class='empty-state'><h2>🎉 Nenhum Pokémon aqui!</h2><p>Coleção completa nesta categoria.</p></div>";
+            updateProgress();
+            return;
+        }
+
+        filtered.forEach(function(p) {
+            var card = document.createElement("div");
+            card.className = "card";
+            var html = "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + p.id + ".png' loading='lazy'>";
+            html += "<div class='number'>#" + String(p.id).padStart(3, "0") + "</div>";
+            html += "<div class='name'>" + p.name + "</div>";
+            card.innerHTML = html;
+            grid.appendChild(card);
+        });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        var total = POKEMON_DATA.length;
+        var bulkCount = POKEMON_DATA.filter(function(p) { return p.bulk; }).length;
+        var urCount = POKEMON_DATA.filter(function(p) { return p.ur; }).length;
+        var pct = total > 0 ? ((bulkCount / total) * 100).toFixed(1) : 0;
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("progress-text").textContent = bulkCount + " / " + total + " (" + pct + "%)";
+        document.getElementById("stat-bulk").textContent = bulkCount;
+        document.getElementById("stat-ur").textContent = urCount;
+        document.getElementById("stat-missing").textContent = total - bulkCount;
+    }
+
+    function filterGen(gen) {
+        currentFilter = gen;
+        var buttons = document.querySelectorAll(".filters button");
+        buttons.forEach(function(b) { b.classList.remove("active"); });
+        if (gen === "all") document.querySelector(".filters button").classList.add("active");
+        else { var el = document.querySelector("[data-gen='" + gen + "']"); if (el) el.classList.add("active"); }
+        renderGrid(gen, document.getElementById("search").value);
+    }
+
+    document.getElementById("search").addEventListener("input", function(e) {
+        renderGrid(currentFilter, e.target.value);
+    });
+
+    loadData();
+    </script>
 </body>
 </html>

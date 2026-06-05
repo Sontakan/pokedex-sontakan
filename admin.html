@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex Admin</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+        
+        /* Login */
+        .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #1a1a2e; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-box { background: #16213e; padding: 40px; border-radius: 16px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        .login-box h2 { margin-bottom: 20px; color: #4ecdc4; }
+        .login-box input { padding: 12px 20px; border-radius: 8px; border: none; font-size: 16px; width: 250px; background: #0f3460; color: #eee; outline: none; }
+        .login-box input::placeholder { color: #666; }
+        .login-box button { margin-top: 16px; padding: 12px 32px; border: none; border-radius: 8px; background: #4ecdc4; color: #1a1a2e; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .login-box button:hover { background: #44bd32; }
+        .login-box .error { color: #e63946; margin-top: 12px; font-size: 13px; display: none; }
+
+        /* App */
+        .app { display: none; }
+        .app.visible { display: block; }
+
+        header { background: #0f3460; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        header h1 { font-size: 1.5em; margin-bottom: 8px; color: #4ecdc4; }
+        
+        .progress-bar { background: #333; border-radius: 20px; height: 24px; margin: 8px auto; max-width: 600px; overflow: hidden; position: relative; }
+        .progress-fill { background: linear-gradient(90deg, #4ecdc4, #44bd32); height: 100%; transition: width 0.5s; border-radius: 20px; }
+        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        
+        .stats { display: flex; gap: 16px; justify-content: center; margin: 8px 0; font-size: 13px; }
+        .stats span { background: #1a1a2e; padding: 4px 12px; border-radius: 12px; }
+        
+        .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+        .filters button { padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; background: #1a1a2e; color: #ccc; transition: all 0.2s; }
+        .filters button.active { background: #4ecdc4; color: #1a1a2e; }
+        .filters button:hover { transform: scale(1.05); }
+        
+        .search { margin: 12px auto; max-width: 400px; }
+        .search input { width: 100%; padding: 10px 16px; border-radius: 20px; border: none; font-size: 14px; background: #1a1a2e; color: #eee; outline: none; }
+        .search input::placeholder { color: #666; }
+
+        .toolbar { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
+        .toolbar a { padding: 6px 14px; border-radius: 16px; font-size: 11px; font-weight: bold; background: #e63946; color: white; text-decoration: none; }
+        .toolbar button { padding: 6px 14px; border-radius: 16px; font-size: 11px; font-weight: bold; background: #e63946; color: white; border: none; cursor: pointer; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .card { background: #16213e; border-radius: 12px; padding: 10px; text-align: center; transition: all 0.2s; border: 2px solid transparent; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .card.has-bulk { border-color: #4ecdc4; }
+        .card.has-ur { border-color: #ffd700; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
+        .card img { width: 72px; height: 72px; image-rendering: pixelated; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .card .number { font-size: 10px; color: #666; }
+        .card .name { font-size: 11px; font-weight: bold; margin: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card .checks { display: flex; gap: 8px; justify-content: center; margin-top: 6px; }
+        .card .checks label { font-size: 10px; display: flex; align-items: center; gap: 3px; cursor: pointer; }
+        .card .checks input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; accent-color: #4ecdc4; }
+        .card .checks .ur-check { accent-color: #ffd700; }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #4ecdc4; color: #1a1a2e; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 1000; }
+        .toast.show { opacity: 1; }
+        
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; padding: 10px; }
+            .card img { width: 56px; height: 56px; }
+            header h1 { font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-box">
+            <h2>🔒 Admin Pokédex</h2>
+            <input type="password" id="password" placeholder="Senha" onkeypress="if(event.key==='Enter')doLogin()">
+            <br>
+            <button onclick="doLogin()">Entrar</button>
+            <div class="error" id="login-error">Senha incorreta</div>
+        </div>
+    </div>
+
+    <!-- App -->
+    <div class="app" id="app">
+        <header>
+            <h1>🔧 Admin — Pokédex</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-text" id="progress-text">0 / 1025</div>
+            </div>
+            <div class="stats">
+                <span>📦 Bulk: <strong id="stat-bulk">0</strong></span>
+                <span>⭐ UR: <strong id="stat-ur">0</strong></span>
+                <span>❌ Faltam: <strong id="stat-missing">1025</strong></span>
+            </div>
+            <div class="filters" id="gen-filters"></div>
+            <div class="search"><input type="text" id="search" placeholder="🔍 Buscar Pokémon..."></div>
+            <div class="toolbar">
+                <a href="index.html">👁️ Ver página pública</a>
+                <button onclick="doLogout()">🚪 Sair</button>
+            </div>
+        </header>
+        
+        <div class="grid" id="pokemon-grid"></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    var PASS_HASH = "2cda89d92593bf1f8be298045e2468a995950027b18f9d181fe42d4f0f6d03b9";
+    var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTiwmUKZhkNoELu50kImXMH-S9zS_oXs-KjM0tmebM-ZRccAoYPj8DyHZmxQ5EZsviGbBbIKM2c3jpE/pub?gid=0&single=true&output=csv";
+    var API_URL = "https://script.google.com/macros/s/AKfycby7gxgZXmayUv_d5toh2_loA8vEJxIZ_IwiSo92c5zTA5pwSBMa_kgUPIPgUUr-5G5rtA/exec";
+    var POKEMON_DATA = [];
+    var currentFilter = "all";
+
+    // Auth
+    async function hashPassword(pass) {
+        var encoder = new TextEncoder();
+        var data = encoder.encode(pass);
+        var hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        var hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
+    }
+
+    async function doLogin() {
+        var pass = document.getElementById("password").value;
+        var hash = await hashPassword(pass);
+        if (hash === PASS_HASH) {
+            sessionStorage.setItem("pokedex_auth", "true");
+            showApp();
+        } else {
+            document.getElementById("login-error").style.display = "block";
+        }
+    }
+
+    function doLogout() {
+        sessionStorage.removeItem("pokedex_auth");
+        location.reload();
+    }
+
+    function showApp() {
+        document.getElementById("login-overlay").style.display = "none";
+        document.getElementById("app").classList.add("visible");
+        loadData();
+    }
+
+    function checkAuth() {
+        if (sessionStorage.getItem("pokedex_auth") === "true") {
+            showApp();
+        }
+    }
+
+    // Toast
+    function showToast(msg) {
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(function() { t.classList.remove("show"); }, 2000);
+    }
+
+    // Data
+    function parseCSV(csv) {
+        var lines = csv.split("\n");
+        var data = [];
+        for (var i = 1; i < lines.length; i++) {
+            var cols = lines[i].split(",");
+            if (cols.length >= 5 && cols[1] && !isNaN(cols[1])) {
+                data.push({
+                    name: cols[0].replace(/"/g, "").trim(),
+                    id: parseInt(cols[1]),
+                    gen: cols[2].replace(/"/g, "").trim(),
+                    bulk: cols[3].trim() === "TRUE",
+                    ur: cols[4].trim() === "TRUE"
+                });
+            }
+        }
+        return data;
+    }
+
+    async function loadData() {
+        document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;padding:40px'>Carregando...</p>";
+        try {
+            var resp = await fetch(CSV_URL);
+            var csv = await resp.text();
+            POKEMON_DATA = parseCSV(csv);
+            initFilters();
+            renderGrid();
+        } catch(e) {
+            document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;color:red'>Erro ao carregar</p>";
+        }
+    }
+
+    async function toggle(id, field, value) {
+        var p = POKEMON_DATA.find(function(p) { return p.id === id; });
+        if (p) p[field] = value;
+        updateProgress();
+        showToast((value ? "✅" : "❌") + " " + p.name + " — " + field);
+        try {
+            await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ id: id, field: field, value: value }) });
+        } catch(e) { console.error(e); }
+    }
+
+    function initFilters() {
+        var gens = [];
+        POKEMON_DATA.forEach(function(p) { if (gens.indexOf(p.gen) === -1) gens.push(p.gen); });
+        var div = document.getElementById("gen-filters");
+        div.innerHTML = "";
+        var btn = document.createElement("button");
+        btn.textContent = "Todas";
+        btn.className = "active";
+        btn.onclick = function() { filterGen("all"); };
+        div.appendChild(btn);
+        gens.forEach(function(gen) {
+            var b = document.createElement("button");
+            b.textContent = gen.replace(" - ", ": ");
+            b.onclick = function() { filterGen(gen); };
+            b.setAttribute("data-gen", gen);
+            div.appendChild(b);
+        });
+    }
+
+    function renderGrid(filter, search) {
+        filter = filter || currentFilter;
+        search = search || "";
+        var grid = document.getElementById("pokemon-grid");
+        grid.innerHTML = "";
+        var filtered = POKEMON_DATA.slice();
+        if (filter !== "all") filtered = filtered.filter(function(p) { return p.gen === filter; });
+        if (search) filtered = filtered.filter(function(p) { return p.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 || String(p.id).indexOf(search) !== -1; });
+
+        filtered.forEach(function(p) {
+            var card = document.createElement("div");
+            card.className = "card" + (p.bulk ? " has-bulk" : "") + (p.ur ? " has-ur" : "");
+            var html = "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + p.id + ".png' loading='lazy'>";
+            html += "<div class='number'>#" + String(p.id).padStart(3, "0") + "</div>";
+            html += "<div class='name'>" + p.name + "</div>";
+            html += "<div class='checks'>";
+            html += "<label><input type='checkbox' " + (p.bulk ? "checked" : "") + " onchange='toggle(" + p.id + ",\"bulk\",this.checked)'>B</label>";
+            html += "<label><input type='checkbox' class='ur-check' " + (p.ur ? "checked" : "") + " onchange='toggle(" + p.id + ",\"ur\",this.checked)'>UR</label>";
+            html += "</div>";
+            card.innerHTML = html;
+            grid.appendChild(card);
+        });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        var total = POKEMON_DATA.length;
+        var bulkCount = POKEMON_DATA.filter(function(p) { return p.bulk; }).length;
+        var urCount = POKEMON_DATA.filter(function(p) { return p.ur; }).length;
+        var pct = total > 0 ? ((bulkCount / total) * 100).toFixed(1) : 0;
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("progress-text").textContent = bulkCount + " / " + total + " (" + pct + "%)";
+        document.getElementById("stat-bulk").textContent = bulkCount;
+        document.getElementById("stat-ur").textContent = urCount;
+        document.getElementById("stat-missing").textContent = total - bulkCount;
+    }
+
+    function filterGen(gen) {
+        currentFilter = gen;
+        var buttons = document.querySelectorAll(".filters button");
+        buttons.forEach(function(b) { b.classList.remove("active"); });
+        if (gen === "all") document.querySelector(".filters button").classList.add("active");
+        else { var el = document.querySelector("[data-gen='" + gen + "']"); if (el) el.classList.add("active"); }
+        renderGrid(gen, document.getElementById("search").value);
+    }
+
+    document.getElementById("search").addEventListener("input", function(e) {
+        renderGrid(currentFilter, e.target.value);
+    });
+
+    checkAuth();
+    </script>
+</body>
+</html>
