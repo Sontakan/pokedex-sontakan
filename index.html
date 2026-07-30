@@ -1,238 +1,30 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex - João | Wishlist</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; min-height: 100vh; }
-        
-        header { background: #dc2626; padding: 16px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-        header h1 { font-size: 1.3em; font-weight: 700; color: #fff; }
-        
-        .progress-bar { background: rgba(0,0,0,0.3); border-radius: 20px; height: 10px; width: 200px; overflow: hidden; }
-        .progress-fill { background: #fbbf24; height: 100%; border-radius: 20px; transition: width 0.5s; }
-        
-        .stats { display: flex; gap: 14px; font-size: 13px; color: rgba(255,255,255,0.9); }
+Sntaan—PkémnColecion Hub8alayflfleecocumnn4
+2em#93bm8t47484mribom4pxx-lncast229wdth10%hub-202824ter; text-decoraion: non; colo: #33332f0s; poition: relative; overflow: hiddenhub- transform: translateY(-4px);123hub-00; margin-bottom: 12pxhub-h21.emmrgin-bom4pxhub-p26478bhub-card.bag{oiabsolu12ight12xfonsiz:10px;3
+card-okedxorder-olod2626cardkedex:hverorder-olo: #dc2626; bx-shaow 0 12px 32pxrgb(220,8,8,0.5)card-okedx .badgdc2626
+cardsnorlxorder-olo1ea5cardsnorax:hovoer-1ea5fboxadow: 0 12px32pxrg(30,58,,0.1)cardsnorlax .bage1e3af
+cardotorer-colorf59e0bcard-room:hovrrer-color590;x-shaow0 2px 32px rgb(245,158,11,0.15)car-otom .bde9e0b
+ard-mowthrer-a8860ecard-meowh:hovrer-colora8860e; box-shaow: 0 12px 32px rgba(1,134,14,0.1)cardmeowh .badea860e
+cad-sraggyrer-color92400ecardscaggy:hverrer-color9400ebx-shadw0 12px 2px rgba(146,64,14,0.15)cardcraggy.badge 2400e
+admininkmgi-top40px; font-siz: 12px94ab8decortoon816boerpxsid #e2e8f0; bder-radius20pxadinlink:hovrcolo: #475569; rder-clor#94a3bcas51>🎴 Sontakan</h1>
+    <p class="subtitl">Pokémon Cr Collction</p>
 
-        .view-links { display: flex; gap: 6px; }
-        .view-links a { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 2px solid rgba(255,255,255,0.4); color: white; transition: all 0.15s; }
-        .view-links a:hover, .view-links a.active { background: white; color: #dc2626; border-color: white; }
-        
-        .controls { max-width: 1200px; margin: 16px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .search input { padding: 8px 16px; border-radius: 20px; border: 2px solid #ddd; font-size: 14px; width: 220px; outline: none; }
-        .search input:focus { border-color: #dc2626; }
-        
-        .filters { display: flex; gap: 6px; flex-wrap: wrap; }
-        .filters button { padding: 5px 12px; border: 2px solid #ddd; border-radius: 20px; cursor: pointer; font-size: 12px; background: #fff; color: #555; font-weight: 600; transition: all 0.15s; }
-        .filters button.active { background: #dc2626; color: white; border-color: #dc2626; }
-        .filters button:hover { border-color: #dc2626; }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-        
-        .card { background: #fff; border-radius: 16px; padding: 16px 10px; text-align: center; border: 2px solid #e8e8e8; transition: all 0.2s; }
-        .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
-        .card img { width: 88px; height: 88px; image-rendering: pixelated; }
-        .card .number { font-size: 10px; color: #aaa; font-weight: 600; }
-        .card .name { font-size: 13px; font-weight: 700; color: #333; margin: 4px 0; }
-        .types { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
-        .type-badge { padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
-        .type-grass { background: #7ac74c; }
-        .type-poison { background: #a33ea1; }
-        .type-fire { background: #ee8130; }
-        .type-water { background: #6390f0; }
-        .type-electric { background: #f7d02c; color: #333; }
-        .type-psychic { background: #f95587; }
-        .type-dark { background: #705746; }
-        .type-normal { background: #a8a77a; }
-        .type-flying { background: #a98ff3; }
-        .type-bug { background: #a6b91a; }
-        .type-dragon { background: #6f35fc; }
-        .type-ice { background: #96d9d6; color: #333; }
-        .type-fairy { background: #d685ad; }
-        .type-fighting { background: #c22e28; }
-        .type-rock { background: #b6a136; }
-        .type-ground { background: #e2bf65; color: #333; }
-        .type-ghost { background: #735797; }
-        .type-steel { background: #b7b7ce; color: #333; }
+    <div class="cads"a href="pokeex.html"ub-cr cadpokdexspanclassbdspanmgrchttp://raw.gihubusercontent.com/PokeAPI/sprites/mser/prites/pokemon/25.png<h2>📋Pokédex</h2>
+         Conlee cras B & UR</a>
 
-        .empty-state { text-align: center; padding: 60px 20px; grid-column: 1/-1; color: #999; }
-        .empty-state h2 { margin-bottom: 8px; }
-        
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 12px; }
-            .card img { width: 64px; height: 64px; }
-            header h1 { font-size: 1.1em; }
-            .header-inner { justify-content: center; }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="header-inner">
-            <h1 id="page-title">📋 Pokédex — João</h1>
-            <div class="stats">
-                <span>📦 <strong id="stat-bulk">0</strong></span>
-                <span>⭐ <strong id="stat-ur">0</strong></span>
-                <span>❌ <strong id="stat-missing">0</strong> faltam</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-            <div class="view-links">
-                <a href="?view=missing" id="link-missing">📋 Faltam</a>
-                <a href="?view=ur" id="link-ur">⭐ UR</a>
-                <a href="?view=all" id="link-all">🔢 Todos</a>
-            </div>
-        </div>
-    </header>
-    
-    <div class="controls">
-        <div class="search"><input type="text" id="search" placeholder="Buscar Pokémon..."></div>
-        <div class="filters" id="gen-filters"></div>
-    </div>
+ href="collectio.hml?pokemn=Sorlax"classhub-card crdsnolax
+            pa class="bade"Coleçãoimg rc="htts://rw.githubuecen.co/PokeAPI/sprtes/mater/prtes/pokemon/143.p
+            h2😴Snorxh2        <p>PT·EN·JP—Todasascartasp    </a>
 
-    <div class="grid" id="pokemon-grid"></div>
+a href="collecton.html?pokemon=Rotom"hub-cad cadotom
+            span"badge>Clção</pan>
+            <mgsrchtts://raw.githubusecontent.com/PkeAPI/spits/mater/prtes/pokemon/479.png
+            h2⚡ Rotomh2p>PT · EN · JP — Toas forma</p</a>
 
-    <script src="types.js"></script>
-    <script>
-    var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTiwmUKZhkNoELu50kImXMH-S9zS_oXs-KjM0tmebM-ZRccAoYPj8DyHZmxQ5EZsviGbBbIKM2c3jpE/pub?gid=0&single=true&output=csv";
-    var POKEMON_DATA = [];
-    var currentFilter = "all";
-
-    function parseCSV(csv) {
-        var lines = csv.split("\n");
-        var data = [];
-        for (var i = 1; i < lines.length; i++) {
-            var cols = lines[i].split(",");
-            if (cols.length >= 5 && cols[1] && !isNaN(cols[1])) {
-                data.push({
-                    name: cols[0].replace(/"/g, "").trim(),
-                    id: parseInt(cols[1]),
-                    gen: cols[2].replace(/"/g, "").trim(),
-                    bulk: cols[3].trim() === "TRUE",
-                    ur: cols[4].trim() === "TRUE"
-                });
-            }
-        }
-        return data;
-    }
-
-    function getView() {
-        var params = new URLSearchParams(window.location.search);
-        return params.get("view") || "missing";
-    }
-
-    async function loadData() {
-        document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;padding:40px;color:#999'>Carregando...</p>";
-        try {
-            var resp = await fetch(CSV_URL);
-            var csv = await resp.text();
-            POKEMON_DATA = parseCSV(csv);
-            highlightActiveLink();
-            initFilters();
-            renderGrid();
-        } catch(e) {
-            document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;color:red'>Erro ao carregar dados</p>";
-        }
-    }
-
-    function highlightActiveLink() {
-        var view = getView();
-        document.querySelectorAll(".view-links a").forEach(function(a) { a.classList.remove("active"); });
-        var el = document.getElementById("link-" + view);
-        if (el) el.classList.add("active");
-    }
-
-    function initFilters() {
-        var view = getView();
-        if (view === "ur") { document.getElementById("gen-filters").style.display = "none"; return; }
-        var gens = [];
-        POKEMON_DATA.forEach(function(p) { if (gens.indexOf(p.gen) === -1) gens.push(p.gen); });
-        var div = document.getElementById("gen-filters");
-        div.innerHTML = "";
-        var btn = document.createElement("button");
-        btn.textContent = "Todas";
-        btn.className = "active";
-        btn.onclick = function() { filterGen("all"); };
-        div.appendChild(btn);
-        gens.forEach(function(gen) {
-            var b = document.createElement("button");
-            b.textContent = gen.replace(" - ", ": ");
-            b.onclick = function() { filterGen(gen); };
-            b.setAttribute("data-gen", gen);
-            div.appendChild(b);
-        });
-    }
-
-    function renderGrid(filter, search) {
-        filter = filter || currentFilter;
-        search = search || "";
-        var grid = document.getElementById("pokemon-grid");
-        grid.innerHTML = "";
-        var view = getView();
-        var filtered = POKEMON_DATA.slice();
-
-        if (view === "missing") {
-            filtered = filtered.filter(function(p) { return !p.bulk; });
-            document.getElementById("page-title").textContent = "📋 Faltam " + filtered.length + " Pokémon";
-        } else if (view === "ur") {
-            filtered = filtered.filter(function(p) { return p.ur; });
-            document.getElementById("page-title").textContent = "⭐ Coleção UR — " + filtered.length + " cartas";
-        } else {
-            document.getElementById("page-title").textContent = "🔢 Pokédex — João (" + POKEMON_DATA.length + ")";
-        }
-
-        if (filter !== "all") filtered = filtered.filter(function(p) { return p.gen === filter; });
-        if (search) filtered = filtered.filter(function(p) { return p.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 || String(p.id).indexOf(search) !== -1; });
-
-        if (filtered.length === 0) {
-            grid.innerHTML = "<div class='empty-state'><h2>🎉 Completo!</h2><p>Nenhum Pokémon faltando aqui.</p></div>";
-            updateProgress();
-            return;
-        }
-
-        filtered.forEach(function(p) {
-            var card = document.createElement("div");
-            card.className = "card";
-            var html = "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + p.id + ".png' loading='lazy'>";
-            html += "<div class='number'>#" + String(p.id).padStart(3, "0") + "</div>";
-            html += "<div class='name'>" + p.name + "</div>";
-            var types = POKEMON_TYPES[p.id] || [];
-            html += "<div class='types'>";
-            types.forEach(function(t) { html += "<span class='type-badge type-" + t + "'>" + t + "</span>"; });
-            html += "</div>";
-            card.innerHTML = html;
-            grid.appendChild(card);
-        });
-        updateProgress();
-    }
-
-    function updateProgress() {
-        var total = POKEMON_DATA.length;
-        var bulkCount = POKEMON_DATA.filter(function(p) { return p.bulk; }).length;
-        var urCount = POKEMON_DATA.filter(function(p) { return p.ur; }).length;
-        var pct = total > 0 ? ((bulkCount / total) * 100).toFixed(1) : 0;
-        document.getElementById("progress-fill").style.width = pct + "%";
-        document.getElementById("stat-bulk").textContent = bulkCount;
-        document.getElementById("stat-ur").textContent = urCount;
-        document.getElementById("stat-missing").textContent = total - bulkCount;
-    }
-
-    function filterGen(gen) {
-        currentFilter = gen;
-        var buttons = document.querySelectorAll(".filters button");
-        buttons.forEach(function(b) { b.classList.remove("active"); });
-        if (gen === "all") document.querySelector(".filters button").classList.add("active");
-        else { var el = document.querySelector("[data-gen='" + gen + "']"); if (el) el.classList.add("active"); }
-        renderGrid(gen, document.getElementById("search").value);
-    }
-
-    document.getElementById("search").addEventListener("input", function(e) {
-        renderGrid(currentFilter, e.target.value);
-    });
-
-    loadData();
-    </script>
-</body>
-</html>
+collection.htmlpoko=Meowthca=hub-cardcrd-eowth"spnclassbageColeçãospnimg src="https://rw.gitubusecontent.com/PokAPI/sprts/mster/sprtes/pokemon/52.pg>
+            <h2�Mewthh2pPT·EN·JP—Kanto,Alola,Galarp    
+a href="collecton.html?pokemon=Scraggy"hub-card ad-craggy    span"badge>Coleção</pn
+            mgsrchps://raw.gthubuontnt.com/PkAPI/spite/mster/spites/pe/559png>
+            <h2🥊 Scraggyh2    p>PT · EN · JP — Toas asa</p
+        aa href="amn.html"ailnk">🔒 Amin</a
+boy>
+</html

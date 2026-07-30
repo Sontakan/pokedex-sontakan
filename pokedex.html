@@ -3,25 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex Admin</title>
+    <title>Pokédex - João | Wishlist</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; min-height: 100vh; }
         
-        /* Login */
-        .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #f5f5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-box { background: #fff; padding: 40px; border-radius: 16px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,0.1); border: 2px solid #e8e8e8; }
-        .login-box h2 { margin-bottom: 20px; color: #dc2626; font-size: 1.4em; }
-        .login-box input { padding: 12px 20px; border-radius: 20px; border: 2px solid #ddd; font-size: 16px; width: 250px; outline: none; }
-        .login-box input:focus { border-color: #dc2626; }
-        .login-box button { margin-top: 16px; padding: 12px 32px; border: none; border-radius: 20px; background: #dc2626; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
-        .login-box button:hover { background: #b91c1c; }
-        .login-box .error { color: #dc2626; margin-top: 12px; font-size: 13px; display: none; }
-
-        /* App */
-        .app { display: none; }
-        .app.visible { display: block; }
-
         header { background: #dc2626; padding: 16px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
         header h1 { font-size: 1.3em; font-weight: 700; color: #fff; }
@@ -31,9 +17,9 @@
         
         .stats { display: flex; gap: 14px; font-size: 13px; color: rgba(255,255,255,0.9); }
 
-        .toolbar { display: flex; gap: 8px; }
-        .toolbar a, .toolbar button { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 2px solid rgba(255,255,255,0.4); background: transparent; color: white; cursor: pointer; }
-        .toolbar a:hover, .toolbar button:hover { background: rgba(255,255,255,0.2); }
+        .view-links { display: flex; gap: 6px; }
+        .view-links a { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 2px solid rgba(255,255,255,0.4); color: white; transition: all 0.15s; }
+        .view-links a:hover, .view-links a.active { background: white; color: #dc2626; border-color: white; }
         
         .controls { max-width: 1200px; margin: 16px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .search input { padding: 8px 16px; border-radius: 20px; border: 2px solid #ddd; font-size: 14px; width: 220px; outline: none; }
@@ -46,14 +32,12 @@
         
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; padding: 20px; max-width: 1200px; margin: 0 auto; }
         
-        .card { background: #fff; border-radius: 16px; padding: 16px 10px; text-align: center; border: 2px solid #e8e8e8; transition: all 0.2s; position: relative; }
+        .card { background: #fff; border-radius: 16px; padding: 16px 10px; text-align: center; border: 2px solid #e8e8e8; transition: all 0.2s; }
         .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
-        .card.has-bulk { border-color: #10b981; background: linear-gradient(180deg, #ecfdf5 0%, #fff 30%); }
-        .card.has-ur { border-color: #f59e0b; background: linear-gradient(180deg, #fffbeb 0%, #fff 30%); }
         .card img { width: 88px; height: 88px; image-rendering: pixelated; }
         .card .number { font-size: 10px; color: #aaa; font-weight: 600; }
         .card .name { font-size: 13px; font-weight: 700; color: #333; margin: 4px 0; }
-        .types { display: flex; gap: 4px; justify-content: center; margin-top: 4px; flex-wrap: wrap; }
+        .types { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
         .type-badge { padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
         .type-grass { background: #7ac74c; }
         .type-poison { background: #a33ea1; }
@@ -73,13 +57,9 @@
         .type-ground { background: #e2bf65; color: #333; }
         .type-ghost { background: #735797; }
         .type-steel { background: #b7b7ce; color: #333; }
-        .card .checks { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
-        .card .checks label { font-size: 11px; display: flex; align-items: center; gap: 3px; color: #666; cursor: pointer; font-weight: 600; }
-        .card .checks input[type="checkbox"] { width: 16px; height: 16px; accent-color: #10b981; cursor: pointer; }
-        .card .checks .ur-check { accent-color: #f59e0b; }
 
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .toast.show { opacity: 1; }
+        .empty-state { text-align: center; padding: 60px 20px; grid-column: 1/-1; color: #999; }
+        .empty-state h2 { margin-bottom: 8px; }
         
         @media (max-width: 600px) {
             .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 12px; }
@@ -90,105 +70,35 @@
     </style>
 </head>
 <body>
-    <!-- Login -->
-    <div class="login-overlay" id="login-overlay">
-        <div class="login-box">
-            <h2>🔒 Admin Pokédex</h2>
-            <input type="password" id="password" placeholder="Senha" onkeypress="if(event.key==='Enter')doLogin()">
-            <br>
-            <button onclick="doLogin()">Entrar</button>
-            <div class="error" id="login-error">Senha incorreta</div>
-        </div>
-    </div>
-
-    <!-- App -->
-    <div class="app" id="app">
-        <header>
-            <div class="header-inner">
-                <h1>🔧 Admin Pokédex</h1>
-                <div class="stats">
-                    <span>📦 Bulk: <strong id="stat-bulk">0</strong></span>
-                    <span>⭐ UR: <strong id="stat-ur">0</strong></span>
-                    <span>❌ Faltam: <strong id="stat-missing">0</strong></span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-                <div class="toolbar">
-                    <a href="index.html">🏠 Home</a>
-                    <a href="pokedex.html">👁️ Pública</a>
-                    <button onclick="doLogout()">Sair</button>
-                </div>
+    <header>
+        <div class="header-inner">
+            <h1 id="page-title">📋 Pokédex — João</h1>
+            <div class="stats">
+                <span>📦 <strong id="stat-bulk">0</strong></span>
+                <span>⭐ <strong id="stat-ur">0</strong></span>
+                <span>❌ <strong id="stat-missing">0</strong> faltam</span>
             </div>
-        </header>
-
-        <!-- Abas de navegação -->
-        <nav style="max-width:1200px;margin:12px auto;padding:0 20px;display:flex;gap:6px;flex-wrap:wrap;">
-            <a href="admin.html" style="padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;background:#dc2626;color:white;">📋 Pokédex</a>
-            <a href="collection.html?pokemon=Snorlax&edit=true" style="padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;background:#16213e;color:white;border:2px solid #e94560;">🃏 Snorlax</a>
-            <a href="collection.html?pokemon=Rotom&edit=true" style="padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;background:#16213e;color:white;border:2px solid #e94560;">🃏 Rotom</a>
-            <a href="collection.html?pokemon=Meowth&edit=true" style="padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;background:#16213e;color:white;border:2px solid #e94560;">🃏 Meowth</a>
-            <a href="collection.html?pokemon=Scraggy&edit=true" style="padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;background:#16213e;color:white;border:2px solid #e94560;">🃏 Scraggy</a>
-        </nav>
-        
-        <div class="controls">
-            <div class="search"><input type="text" id="search" placeholder="Buscar Pokémon..."></div>
-            <div class="filters" id="gen-filters"></div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="view-links">
+                <a href="?view=missing" id="link-missing">📋 Faltam</a>
+                <a href="?view=ur" id="link-ur">⭐ UR</a>
+                <a href="?view=all" id="link-all">🔢 Todos</a>
+            </div>
         </div>
-
-        <div class="grid" id="pokemon-grid"></div>
+    </header>
+    
+    <div class="controls">
+        <div class="search"><input type="text" id="search" placeholder="Buscar Pokémon..."></div>
+        <div class="filters" id="gen-filters"></div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <div class="grid" id="pokemon-grid"></div>
 
     <script src="types.js"></script>
     <script>
-    var PASS_HASH = "2cda89d92593bf1f8be298045e2468a995950027b18f9d181fe42d4f0f6d03b9";
     var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTiwmUKZhkNoELu50kImXMH-S9zS_oXs-KjM0tmebM-ZRccAoYPj8DyHZmxQ5EZsviGbBbIKM2c3jpE/pub?gid=0&single=true&output=csv";
-    var API_URL = "https://script.google.com/macros/s/AKfycby7gxgZXmayUv_d5toh2_loA8vEJxIZ_IwiSo92c5zTA5pwSBMa_kgUPIPgUUr-5G5rtA/exec";
     var POKEMON_DATA = [];
     var currentFilter = "all";
-
-    async function hashPassword(pass) {
-        var encoder = new TextEncoder();
-        var data = encoder.encode(pass);
-        var hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        var hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
-    }
-
-    async function doLogin() {
-        var pass = document.getElementById("password").value;
-        var hash = await hashPassword(pass);
-        if (hash === PASS_HASH) {
-            sessionStorage.setItem("pokedex_auth", "true");
-            showApp();
-        } else {
-            document.getElementById("login-error").style.display = "block";
-        }
-    }
-
-    function doLogout() {
-        sessionStorage.removeItem("pokedex_auth");
-        location.reload();
-    }
-
-    function showApp() {
-        document.getElementById("login-overlay").style.display = "none";
-        document.getElementById("app").classList.add("visible");
-        loadData();
-    }
-
-    function checkAuth() {
-        if (sessionStorage.getItem("pokedex_auth") === "true") {
-            showApp();
-        }
-    }
-
-    function showToast(msg) {
-        var t = document.getElementById("toast");
-        t.textContent = msg;
-        t.classList.add("show");
-        setTimeout(function() { t.classList.remove("show"); }, 2000);
-    }
 
     function parseCSV(csv) {
         var lines = csv.split("\n");
@@ -208,30 +118,35 @@
         return data;
     }
 
+    function getView() {
+        var params = new URLSearchParams(window.location.search);
+        return params.get("view") || "missing";
+    }
+
     async function loadData() {
         document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;padding:40px;color:#999'>Carregando...</p>";
         try {
             var resp = await fetch(CSV_URL);
             var csv = await resp.text();
             POKEMON_DATA = parseCSV(csv);
+            highlightActiveLink();
             initFilters();
             renderGrid();
         } catch(e) {
-            document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;color:red'>Erro ao carregar</p>";
+            document.getElementById("pokemon-grid").innerHTML = "<p style='text-align:center;grid-column:1/-1;color:red'>Erro ao carregar dados</p>";
         }
     }
 
-    async function toggle(id, field, value) {
-        var p = POKEMON_DATA.find(function(p) { return p.id === id; });
-        if (p) p[field] = value;
-        updateProgress();
-        showToast((value ? "✅" : "❌") + " " + p.name + " — " + field);
-        try {
-            await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ id: id, field: field, value: value }) });
-        } catch(e) { console.error(e); }
+    function highlightActiveLink() {
+        var view = getView();
+        document.querySelectorAll(".view-links a").forEach(function(a) { a.classList.remove("active"); });
+        var el = document.getElementById("link-" + view);
+        if (el) el.classList.add("active");
     }
 
     function initFilters() {
+        var view = getView();
+        if (view === "ur") { document.getElementById("gen-filters").style.display = "none"; return; }
         var gens = [];
         POKEMON_DATA.forEach(function(p) { if (gens.indexOf(p.gen) === -1) gens.push(p.gen); });
         var div = document.getElementById("gen-filters");
@@ -255,23 +170,37 @@
         search = search || "";
         var grid = document.getElementById("pokemon-grid");
         grid.innerHTML = "";
+        var view = getView();
         var filtered = POKEMON_DATA.slice();
+
+        if (view === "missing") {
+            filtered = filtered.filter(function(p) { return !p.bulk; });
+            document.getElementById("page-title").textContent = "📋 Faltam " + filtered.length + " Pokémon";
+        } else if (view === "ur") {
+            filtered = filtered.filter(function(p) { return p.ur; });
+            document.getElementById("page-title").textContent = "⭐ Coleção UR — " + filtered.length + " cartas";
+        } else {
+            document.getElementById("page-title").textContent = "🔢 Pokédex — João (" + POKEMON_DATA.length + ")";
+        }
+
         if (filter !== "all") filtered = filtered.filter(function(p) { return p.gen === filter; });
         if (search) filtered = filtered.filter(function(p) { return p.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 || String(p.id).indexOf(search) !== -1; });
 
+        if (filtered.length === 0) {
+            grid.innerHTML = "<div class='empty-state'><h2>🎉 Completo!</h2><p>Nenhum Pokémon faltando aqui.</p></div>";
+            updateProgress();
+            return;
+        }
+
         filtered.forEach(function(p) {
             var card = document.createElement("div");
-            card.className = "card" + (p.bulk ? " has-bulk" : "") + (p.ur ? " has-ur" : "");
+            card.className = "card";
             var html = "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + p.id + ".png' loading='lazy'>";
             html += "<div class='number'>#" + String(p.id).padStart(3, "0") + "</div>";
             html += "<div class='name'>" + p.name + "</div>";
             var types = POKEMON_TYPES[p.id] || [];
             html += "<div class='types'>";
             types.forEach(function(t) { html += "<span class='type-badge type-" + t + "'>" + t + "</span>"; });
-            html += "</div>";
-            html += "<div class='checks'>";
-            html += "<label><input type='checkbox' " + (p.bulk ? "checked" : "") + " onchange='toggle(" + p.id + ",\"bulk\",this.checked)'>B</label>";
-            html += "<label><input type='checkbox' class='ur-check' " + (p.ur ? "checked" : "") + " onchange='toggle(" + p.id + ",\"ur\",this.checked)'>UR</label>";
             html += "</div>";
             card.innerHTML = html;
             grid.appendChild(card);
@@ -303,7 +232,7 @@
         renderGrid(currentFilter, e.target.value);
     });
 
-    checkAuth();
+    loadData();
     </script>
 </body>
 </html>
