@@ -141,15 +141,16 @@
                     data.data.forEach(function(c) {
                         // Determina variantes disponíveis
                         var variants = [];
+                        var prices = {};
                         if (c.tcgplayer && c.tcgplayer.prices) {
-                            if (c.tcgplayer.prices.normal) variants.push("Normal");
-                            if (c.tcgplayer.prices.holofoil) variants.push("Holo");
-                            if (c.tcgplayer.prices.reverseHolofoil) variants.push("Reverse Holo");
-                            if (c.tcgplayer.prices["1stEditionNormal"]) variants.push("1st Edition");
-                            if (c.tcgplayer.prices["1stEditionHolofoil"]) variants.push("1st Ed Holo");
-                            if (c.tcgplayer.prices.unlimitedHolofoil) variants.push("Unlimited Holo");
+                            if (c.tcgplayer.prices.normal) { variants.push("Normal"); prices["Normal"] = c.tcgplayer.prices.normal.market || c.tcgplayer.prices.normal.mid || 0; }
+                            if (c.tcgplayer.prices.holofoil) { variants.push("Holo"); prices["Holo"] = c.tcgplayer.prices.holofoil.market || c.tcgplayer.prices.holofoil.mid || 0; }
+                            if (c.tcgplayer.prices.reverseHolofoil) { variants.push("Reverse Holo"); prices["Reverse Holo"] = c.tcgplayer.prices.reverseHolofoil.market || c.tcgplayer.prices.reverseHolofoil.mid || 0; }
+                            if (c.tcgplayer.prices["1stEditionNormal"]) { variants.push("1st Edition"); prices["1st Edition"] = c.tcgplayer.prices["1stEditionNormal"].market || 0; }
+                            if (c.tcgplayer.prices["1stEditionHolofoil"]) { variants.push("1st Ed Holo"); prices["1st Ed Holo"] = c.tcgplayer.prices["1stEditionHolofoil"].market || 0; }
+                            if (c.tcgplayer.prices.unlimitedHolofoil) { variants.push("Unlimited Holo"); prices["Unlimited Holo"] = c.tcgplayer.prices.unlimitedHolofoil.market || 0; }
                         }
-                        if (variants.length === 0) variants.push("Normal");
+                        if (variants.length === 0) { variants.push("Normal"); prices["Normal"] = 0; }
 
                         var setName = c.set ? c.set.name : "";
                         var number = c.number + "/" + (c.set ? c.set.printedTotal : "?");
@@ -166,7 +167,8 @@
                                     set_name: setName,
                                     number: number,
                                     language: lang,
-                                    variant: v
+                                    variant: v,
+                                    price: prices[v] || 0
                                 });
                             });
                         });
@@ -271,7 +273,9 @@
                 "<div class='card-info'>" +
                     "<div class='card-name'>" + c.name + "</div>" +
                     "<div class='card-set'>" + c.set_name + "</div>" +
-                    "<div class='card-variant'><span class='variant-badge " + variantClass + "'>" + c.variant + "</span></div>" +
+                    "<div class='card-variant'><span class='variant-badge " + variantClass + "'>" + c.variant + "</span>" +
+                    (c.price ? " <span style='font-size:9px;color:#fbbf24;font-weight:700'>$" + c.price.toFixed(2) + "</span>" : "") +
+                    "</div>" +
                 "</div>" +
                 "<div class='check-row'>" +
                     "<label><input type='checkbox' " + (owned ? "checked" : "") + " data-idx='" + idx + "'> Tenho</label>" +
