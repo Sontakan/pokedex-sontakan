@@ -119,12 +119,53 @@
     <script>
     var API_URL = "https://script.google.com/macros/s/AKfycby7gxgZXmayUv_d5toh2_loA8vEJxIZ_IwiSo92c5zTA5pwSBMa_kgUPIPgUUr-5G5rtA/exec";
     var POKEMONTCG_URL = "https://api.pokemontcg.io/v2/cards";
+    var PASS_HASH = "2cda89d92593bf1f8be298045e2468a995950027b18f9d181fe42d4f0f6d03b9";
 
+    var isEditMode = false;
     var currentPokemon = "Snorlax";
     var currentLang = "all";
     var currentView = "all";
-    var allCards = []; // Each entry = { id, name, image, set_name, number, language, variant }
-    var ownedMap = {}; // key = "cardId|variant" -> true/false
+    var allCards = [];
+    var ownedMap = {};
+
+    // Verifica se está autenticado
+    function checkEditMode() {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get("edit") === "true") {
+            if (sessionStorage.getItem("pokedex_auth") === "true") {
+                isEditMode = true;
+                document.getElementById("page-title").textContent = "🔧 " + document.getElementById("page-title").textContent;
+            } else {
+                // Pede senha
+                var pass = prompt("🔒 Senha do Admin:");
+                if (pass) {
+                    hashPassword(pass).then(function(hash) {
+                        if (hash === PASS_HASH) {
+                            sessionStorage.setItem("pokedex_auth", "true");
+                            isEditMode = true;
+                            location.reload();
+                        } else {
+                            alert("Senha incorreta");
+                            window.location.href = "collection.html?pokemon=" + currentPokemon;
+                        }
+                    });
+                    return false; // Não inicia ainda
+                } else {
+                    window.location.href = "collection.html?pokemon=" + currentPokemon;
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    async function hashPassword(pass) {
+        var encoder = new TextEncoder();
+        var data = encoder.encode(pass);
+        var hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        var hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
+    }
 
     // Busca cartas em inglês da pokemontcg.io e expande por variante
     async function fetchAllCards(pokemon) {
@@ -293,9 +334,7 @@
                     (c.price ? " <span style='font-size:9px;color:#fbbf24;font-weight:700'>$" + c.price.toFixed(2) + "</span>" : "") +
                     "</div>" +
                 "</div>" +
-                "<div class='check-row'>" +
-                    "<label><input type='checkbox' " + (owned ? "checked" : "") + " data-idx='" + idx + "'> Tenho</label>" +
-                "</div>";
+                (isEditMode ? "<div class='check-row'><label><input type='checkbox' " + (owned ? "checked" : "") + " data-idx='" + idx + "'> Tenho</label></div>" : "");
             grid.appendChild(card);
         });
 
@@ -388,7 +427,10 @@
     document.getElementById("search").addEventListener("input", function() { renderGrid(); });
 
     // Init
-    switchPokemon(getParam("pokemon") || "Snorlax");
+    currentPokemon = getParam("pokemon") || "Snorlax";
+    if (checkEditMode() !== false) {
+        switchPokemon(currentPokemon);
+    }
     </script>
 </body>
 </html>
