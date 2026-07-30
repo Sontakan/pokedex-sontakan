@@ -8,57 +8,70 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
 
-        header { background: linear-gradient(135deg, #16213e 0%, #0f3460 100%); padding: 16px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
-        .header-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-        header h1 { font-size: 1.4em; font-weight: 700; color: #fff; }
+        header { background: linear-gradient(135deg, #16213e 0%, #0f3460 100%); padding: 14px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+        .header-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        header h1 { font-size: 1.3em; font-weight: 700; color: #fff; }
         .stats { font-size: 13px; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 10px; }
-        .progress-bar { background: rgba(255,255,255,0.15); border-radius: 20px; height: 10px; width: 180px; overflow: hidden; }
+        .progress-bar { background: rgba(255,255,255,0.15); border-radius: 20px; height: 10px; width: 160px; overflow: hidden; }
         .progress-fill { background: #fbbf24; height: 100%; border-radius: 20px; transition: width 0.5s; }
 
-        .tabs { display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 12px; flex-wrap: wrap; }
-        .tabs button { padding: 8px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; color: rgba(255,255,255,0.7); transition: all 0.2s; }
+        .tabs { display: flex; gap: 4px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 10px; flex-wrap: wrap; }
+        .tabs button { padding: 7px 14px; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; background: transparent; color: rgba(255,255,255,0.6); transition: all 0.2s; }
         .tabs button.active { background: #e94560; color: white; }
         .tabs button:hover:not(.active) { background: rgba(255,255,255,0.1); }
 
-        .controls { max-width: 1400px; margin: 16px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .search input { padding: 10px 18px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.15); font-size: 14px; width: 240px; outline: none; background: rgba(255,255,255,0.05); color: #fff; }
+        .controls { max-width: 1400px; margin: 14px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .search input { padding: 9px 16px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.12); font-size: 13px; width: 220px; outline: none; background: rgba(255,255,255,0.05); color: #fff; }
         .search input:focus { border-color: #e94560; }
-        .search input::placeholder { color: rgba(255,255,255,0.4); }
+        .search input::placeholder { color: rgba(255,255,255,0.35); }
 
-        .lang-filters { display: flex; gap: 6px; }
-        .lang-filters button { padding: 6px 14px; border: 2px solid rgba(255,255,255,0.2); border-radius: 20px; cursor: pointer; font-size: 12px; background: transparent; color: #ccc; font-weight: 600; transition: all 0.15s; }
+        .lang-filters { display: flex; gap: 5px; }
+        .lang-filters button { padding: 5px 12px; border: 2px solid rgba(255,255,255,0.15); border-radius: 16px; cursor: pointer; font-size: 11px; background: transparent; color: #bbb; font-weight: 600; transition: all 0.15s; }
         .lang-filters button.active { background: #e94560; color: white; border-color: #e94560; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .view-filters { display: flex; gap: 5px; }
+        .view-filters button { padding: 5px 12px; border: 2px solid rgba(255,255,255,0.15); border-radius: 16px; cursor: pointer; font-size: 11px; background: transparent; color: #bbb; font-weight: 600; transition: all 0.15s; }
+        .view-filters button.active { background: #10b981; color: white; border-color: #10b981; }
 
-        .card { background: #16213e; border-radius: 14px; padding: 10px; text-align: center; border: 2px solid rgba(255,255,255,0.08); transition: all 0.2s; position: relative; overflow: hidden; }
-        .card:hover { box-shadow: 0 8px 30px rgba(233,69,96,0.2); transform: translateY(-3px); border-color: rgba(233,69,96,0.3); }
-        .card.owned { border-color: #10b981; }
-        .card img { width: 100%; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); aspect-ratio: 5/7; object-fit: cover; background: #0f1a30; }
-        .card .card-info { margin-top: 8px; }
-        .card .card-name { font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card .card-set { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card .card-number { font-size: 9px; color: rgba(255,255,255,0.35); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; padding: 16px; max-width: 1400px; margin: 0 auto; }
 
-        .lang-badge { position: absolute; top: 6px; right: 6px; padding: 2px 5px; border-radius: 4px; font-size: 8px; font-weight: 700; }
+        .card { background: #16213e; border-radius: 12px; padding: 8px; text-align: center; border: 2px solid rgba(255,255,255,0.06); transition: all 0.2s; position: relative; }
+        .card:hover { box-shadow: 0 6px 24px rgba(233,69,96,0.15); transform: translateY(-2px); }
+        .card.owned { border-color: #10b981; background: linear-gradient(180deg, rgba(16,185,129,0.08) 0%, #16213e 20%); }
+        .card.missing { opacity: 0.6; }
+        .card img { width: 100%; border-radius: 6px; box-shadow: 0 3px 10px rgba(0,0,0,0.3); aspect-ratio: 63/88; object-fit: cover; background: #0f1a30; }
+        .card .card-info { margin-top: 6px; }
+        .card .card-name { font-size: 10px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card .card-set { font-size: 9px; color: rgba(255,255,255,0.45); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card .card-variant { font-size: 9px; margin-top: 3px; }
+        .variant-badge { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 8px; font-weight: 700; text-transform: uppercase; }
+        .vb-normal { background: #374151; color: #d1d5db; }
+        .vb-holo { background: #7c3aed; color: #ede9fe; }
+        .vb-reverse { background: #0891b2; color: #cffafe; }
+
+        .lang-badge { position: absolute; top: 5px; right: 5px; padding: 1px 4px; border-radius: 3px; font-size: 8px; font-weight: 700; }
         .lang-pt { background: #16a34a; color: white; }
         .lang-en { background: #2563eb; color: white; }
         .lang-ja { background: #dc2626; color: white; }
 
-        .owned-check { position: absolute; top: 6px; left: 6px; font-size: 14px; background: #10b981; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+        .card .check-row { margin-top: 6px; }
+        .card .check-row label { font-size: 10px; display: flex; align-items: center; justify-content: center; gap: 4px; color: #aaa; cursor: pointer; }
+        .card .check-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: #10b981; cursor: pointer; }
 
-        .loading { text-align: center; padding: 60px; grid-column: 1/-1; color: #999; }
-        .empty { text-align: center; padding: 60px; grid-column: 1/-1; color: #666; }
+        .loading { text-align: center; padding: 60px; grid-column: 1/-1; color: #888; font-size: 14px; }
+        .empty { text-align: center; padding: 60px; grid-column: 1/-1; color: #555; }
 
-        .nav-links { display: flex; gap: 8px; }
-        .nav-links a { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none; color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.2); }
-        .nav-links a:hover { background: rgba(255,255,255,0.1); }
+        .nav-links { display: flex; gap: 6px; }
+        .nav-links a { padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 600; text-decoration: none; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.15); }
+        .nav-links a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 12px; opacity: 0; transition: opacity 0.3s; z-index: 1000; }
+        .toast.show { opacity: 1; }
 
         @media (max-width: 600px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 12px; }
-            header h1 { font-size: 1.1em; }
-            .tabs button { padding: 6px 10px; font-size: 11px; }
-            .header-inner { justify-content: center; text-align: center; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; padding: 10px; }
+            header h1 { font-size: 1em; }
+            .tabs button { padding: 5px 8px; font-size: 10px; }
         }
     </style>
 </head>
@@ -78,23 +91,30 @@
             </div>
             <div class="nav-links">
                 <a href="index.html">📋 Pokédex</a>
+                <a href="admin.html">🔧 Admin</a>
             </div>
         </div>
     </header>
 
     <div class="controls">
         <div class="search"><input type="text" id="search" placeholder="Buscar carta ou set..."></div>
-        <div class="lang-filters" id="lang-filters">
+        <div class="lang-filters">
             <button class="active" data-lang="all">Todos</button>
             <button data-lang="pt">🇧🇷 PT</button>
             <button data-lang="en">🇺🇸 EN</button>
             <button data-lang="ja">🇯🇵 JP</button>
+        </div>
+        <div class="view-filters">
+            <button class="active" data-view="all">Todas</button>
+            <button data-view="missing">❌ Faltam</button>
+            <button data-view="owned">✅ Tenho</button>
         </div>
     </div>
 
     <div class="grid" id="card-grid">
         <div class="loading">⏳ Carregando cartas...</div>
     </div>
+    <div class="toast" id="toast"></div>
 
     <script>
     var API_URL = "https://script.google.com/macros/s/AKfycby7gxgZXmayUv_d5toh2_loA8vEJxIZ_IwiSo92c5zTA5pwSBMa_kgUPIPgUUr-5G5rtA/exec";
@@ -102,38 +122,53 @@
 
     var currentPokemon = "Snorlax";
     var currentLang = "all";
-    var allCards = [];
-    var ownedCards = {};
+    var currentView = "all";
+    var allCards = []; // Each entry = { id, name, image, set_name, number, language, variant }
+    var ownedMap = {}; // key = "cardId|variant" -> true/false
 
-    // Busca nomes (para pokemontcg.io que é só EN, usamos nome EN)
-    // Para PT e JP usamos TCGdex com filtro client-side
-    var POKEMON_SEARCH = {
-        "Snorlax": { en: "snorlax", pt: ["Snorlax", "Snorlax ex", "Snorlax-GX", "Snorlax V", "Snorlax VMAX"], ja: ["カビゴン"] },
-        "Rotom": { en: "rotom", pt: ["Rotom"], ja: ["ロトム"] },
-        "Meowth": { en: "meowth", pt: ["Meowth"], ja: ["ニャース"] },
-        "Scraggy": { en: "scraggy", pt: ["Scraggy"], ja: ["ズルッグ"] }
-    };
-
-    // Usa pokemontcg.io para inglês (tem filtro por nome e variantes)
-    async function fetchEnglishCards(pokemon) {
+    // Busca cartas em inglês da pokemontcg.io e expande por variante
+    async function fetchAllCards(pokemon) {
         var cards = [];
-        var name = POKEMON_SEARCH[pokemon].en;
         var page = 1;
         var hasMore = true;
+
         while (hasMore) {
             try {
-                var resp = await fetch(POKEMONTCG_URL + "?q=name:" + name + "&page=" + page + "&pageSize=250&orderBy=set.releaseDate");
+                var url = POKEMONTCG_URL + "?q=name:" + encodeURIComponent(pokemon) + "&page=" + page + "&pageSize=250&orderBy=set.releaseDate";
+                var resp = await fetch(url);
                 var data = await resp.json();
                 if (data.data && data.data.length > 0) {
                     data.data.forEach(function(c) {
-                        cards.push({
-                            id: c.id,
-                            name: c.name,
-                            image: c.images ? c.images.small : "",
-                            set_name: c.set ? c.set.name : "",
-                            number: c.number + "/" + (c.set ? c.set.printedTotal : "?"),
-                            language: "en",
-                            variants: getVariantsFromTcgPlayer(c)
+                        // Determina variantes disponíveis
+                        var variants = [];
+                        if (c.tcgplayer && c.tcgplayer.prices) {
+                            if (c.tcgplayer.prices.normal) variants.push("Normal");
+                            if (c.tcgplayer.prices.holofoil) variants.push("Holo");
+                            if (c.tcgplayer.prices.reverseHolofoil) variants.push("Reverse Holo");
+                            if (c.tcgplayer.prices["1stEditionNormal"]) variants.push("1st Edition");
+                            if (c.tcgplayer.prices["1stEditionHolofoil"]) variants.push("1st Ed Holo");
+                            if (c.tcgplayer.prices.unlimitedHolofoil) variants.push("Unlimited Holo");
+                        }
+                        if (variants.length === 0) variants.push("Normal");
+
+                        var setName = c.set ? c.set.name : "";
+                        var number = c.number + "/" + (c.set ? c.set.printedTotal : "?");
+                        var imgSmall = c.images ? c.images.small : "";
+
+                        // Cria uma entrada para cada variante em cada idioma
+                        var langs = ["en", "pt", "ja"];
+                        langs.forEach(function(lang) {
+                            variants.forEach(function(v) {
+                                cards.push({
+                                    id: c.id,
+                                    name: c.name,
+                                    image: imgSmall,
+                                    set_name: setName,
+                                    number: number,
+                                    language: lang,
+                                    variant: v
+                                });
+                            });
                         });
                     });
                     if (data.data.length < 250) hasMore = false;
@@ -146,55 +181,56 @@
         return cards;
     }
 
-    function getVariantsFromTcgPlayer(card) {
-        var variants = [];
-        if (card.tcgplayer && card.tcgplayer.prices) {
-            var prices = card.tcgplayer.prices;
-            if (prices.normal) variants.push("Normal");
-            if (prices.holofoil) variants.push("Holo");
-            if (prices.reverseHolofoil) variants.push("Reverse Holo");
-            if (prices["1stEditionNormal"]) variants.push("1st Edition");
-            if (prices["1stEditionHolofoil"]) variants.push("1st Ed Holo");
-        }
-        if (variants.length === 0) variants.push("Normal");
-        return variants;
-    }
-
-    // Para PT e JP: usa os mesmos IDs do EN e monta URLs da TCGdex
-    function buildTcgdexCards(enCards, lang) {
-        var cards = [];
-        enCards.forEach(function(c) {
-            // Monta URL da imagem TCGdex: https://assets.tcgdex.net/{lang}/{serie}/{set}/{number}
-            // O ID no pokemontcg.io é tipo "swsh4-131", na TCGdex seria similar
-            var tcgdexImage = "https://assets.tcgdex.net/" + lang + "/" + c.id.replace("-", "/").replace(/([a-z]+)(\d)/, "$1/$2") + "/high.webp";
-            
-            // Tentativa mais simples: usar a imagem EN mesmo (muitas cartas PT/JP não tem na TCGdex)
-            cards.push({
-                id: c.id + "-" + lang,
-                name: c.name,
-                image: c.image, // Usa imagem EN como fallback
-                set_name: c.set_name,
-                number: c.number,
-                language: lang,
-                variants: c.variants
-            });
-        });
-        return cards;
-    }
-
+    // Carrega dados salvos da planilha
     async function loadOwned(pokemon) {
-        ownedCards = {};
+        ownedMap = {};
         try {
             var resp = await fetch(API_URL + "?tab=" + encodeURIComponent(pokemon));
             var data = await resp.json();
             if (Array.isArray(data)) {
                 data.forEach(function(item) {
                     if (item.owned) {
-                        ownedCards[item.card_id + "|" + item.variant] = true;
+                        ownedMap[item.card_id + "|" + item.language + "|" + item.variant] = true;
                     }
                 });
             }
-        } catch(e) { console.error("Erro owned:", e); }
+        } catch(e) { console.error("Erro ao carregar owned:", e); }
+    }
+
+    // Salva no Google Sheets
+    async function saveCard(card, owned) {
+        var key = card.id + "|" + card.language + "|" + card.variant;
+        ownedMap[key] = owned;
+        updateStats();
+        showToast((owned ? "✅" : "❌") + " " + card.name + " " + card.variant + " (" + card.language.toUpperCase() + ")");
+
+        try {
+            await fetch(API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify({
+                    tab: currentPokemon,
+                    card_id: card.id,
+                    name: card.name,
+                    set_name: card.set_name,
+                    number: card.number,
+                    language: card.language,
+                    variant: card.variant,
+                    value: owned
+                })
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    function showToast(msg) {
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(function() { t.classList.remove("show"); }, 2000);
+    }
+
+    function isOwned(card) {
+        return ownedMap[card.id + "|" + card.language + "|" + card.variant] === true;
     }
 
     function renderGrid() {
@@ -204,10 +240,12 @@
         var search = document.getElementById("search").value.toLowerCase();
         var filtered = allCards.filter(function(c) {
             if (currentLang !== "all" && c.language !== currentLang) return false;
+            if (currentView === "owned" && !isOwned(c)) return false;
+            if (currentView === "missing" && isOwned(c)) return false;
             if (search) {
                 var match = c.name.toLowerCase().indexOf(search) !== -1 ||
                     c.set_name.toLowerCase().indexOf(search) !== -1 ||
-                    c.id.toLowerCase().indexOf(search) !== -1;
+                    c.number.toLowerCase().indexOf(search) !== -1;
                 if (!match) return false;
             }
             return true;
@@ -215,34 +253,67 @@
 
         if (filtered.length === 0) {
             grid.innerHTML = "<div class='empty'>Nenhuma carta encontrada</div>";
-            updateStats(filtered);
             return;
         }
 
-        filtered.forEach(function(c) {
-            var key = c.id + "|Normal";
-            var isOwned = ownedCards[key];
-
+        filtered.forEach(function(c, idx) {
+            var owned = isOwned(c);
             var card = document.createElement("div");
-            card.className = "card" + (isOwned ? " owned" : "");
+            card.className = "card" + (owned ? " owned" : "");
+
+            var variantClass = "vb-normal";
+            if (c.variant.toLowerCase().indexOf("holo") !== -1 && c.variant.toLowerCase().indexOf("reverse") === -1) variantClass = "vb-holo";
+            if (c.variant.toLowerCase().indexOf("reverse") !== -1) variantClass = "vb-reverse";
+
             card.innerHTML =
-                (isOwned ? "<div class='owned-check'>✓</div>" : "") +
                 "<div class='lang-badge lang-" + c.language + "'>" + c.language.toUpperCase() + "</div>" +
-                "<img src='" + c.image + "' loading='lazy' onerror=\"this.style.display='none'\">" +
+                "<img src='" + c.image + "' loading='lazy' onerror=\"this.style.opacity='0.3'\">" +
                 "<div class='card-info'>" +
                     "<div class='card-name'>" + c.name + "</div>" +
                     "<div class='card-set'>" + c.set_name + "</div>" +
-                    "<div class='card-number'>" + c.number + "</div>" +
+                    "<div class='card-variant'><span class='variant-badge " + variantClass + "'>" + c.variant + "</span></div>" +
+                "</div>" +
+                "<div class='check-row'>" +
+                    "<label><input type='checkbox' " + (owned ? "checked" : "") + " data-idx='" + idx + "'> Tenho</label>" +
                 "</div>";
             grid.appendChild(card);
         });
 
-        updateStats(filtered);
+        // Bind checkboxes
+        grid.querySelectorAll("input[type=checkbox]").forEach(function(cb) {
+            cb.addEventListener("change", function() {
+                var idx = parseInt(this.dataset.idx);
+                var filtered2 = getFilteredCards();
+                var card = filtered2[idx];
+                if (card) {
+                    saveCard(card, this.checked);
+                    this.closest(".card").classList.toggle("owned", this.checked);
+                }
+            });
+        });
+
+        updateStats();
+    }
+
+    function getFilteredCards() {
+        var search = document.getElementById("search").value.toLowerCase();
+        return allCards.filter(function(c) {
+            if (currentLang !== "all" && c.language !== currentLang) return false;
+            if (currentView === "owned" && !isOwned(c)) return false;
+            if (currentView === "missing" && isOwned(c)) return false;
+            if (search) {
+                var match = c.name.toLowerCase().indexOf(search) !== -1 ||
+                    c.set_name.toLowerCase().indexOf(search) !== -1 ||
+                    c.number.toLowerCase().indexOf(search) !== -1;
+                if (!match) return false;
+            }
+            return true;
+        });
     }
 
     function updateStats() {
         var total = allCards.length;
-        var owned = Object.keys(ownedCards).length;
+        var owned = Object.keys(ownedMap).filter(function(k) { return ownedMap[k]; }).length;
         document.getElementById("stat-owned").textContent = owned;
         document.getElementById("stat-total").textContent = total;
         var pct = total > 0 ? ((owned / total) * 100).toFixed(1) : 0;
@@ -252,33 +323,20 @@
     async function switchPokemon(pokemon) {
         currentPokemon = pokemon;
         document.getElementById("page-title").textContent = "🃏 Coleção " + pokemon;
-        document.getElementById("card-grid").innerHTML = "<div class='loading'>⏳ Carregando cartas de " + pokemon + "...</div>";
+        document.getElementById("card-grid").innerHTML = "<div class='loading'>⏳ Carregando cartas de " + pokemon + "...<br><small>Pode demorar alguns segundos</small></div>";
 
         document.querySelectorAll(".tabs button").forEach(function(b) { b.classList.remove("active"); });
         var btn = document.querySelector('[data-pokemon="' + pokemon + '"]');
         if (btn) btn.classList.add("active");
 
-        allCards = [];
-
-        // Busca EN via pokemontcg.io
-        var enCards = await fetchEnglishCards(pokemon);
-        allCards = allCards.concat(enCards);
-
-        // Para PT e JP: cria entradas baseadas nas cartas EN
-        var ptCards = buildTcgdexCards(enCards, "pt");
-        allCards = allCards.concat(ptCards);
-
-        var jaCards = buildTcgdexCards(enCards, "ja");
-        allCards = allCards.concat(jaCards);
-
+        allCards = await fetchAllCards(pokemon);
         await loadOwned(pokemon);
         renderGrid();
     }
 
     // URL params
     function getParam(name) {
-        var params = new URLSearchParams(window.location.search);
-        return params.get(name);
+        return new URLSearchParams(window.location.search).get(name);
     }
 
     // Event listeners
@@ -298,11 +356,19 @@
         });
     });
 
+    document.querySelectorAll(".view-filters button").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            currentView = this.dataset.view;
+            document.querySelectorAll(".view-filters button").forEach(function(b) { b.classList.remove("active"); });
+            this.classList.add("active");
+            renderGrid();
+        });
+    });
+
     document.getElementById("search").addEventListener("input", function() { renderGrid(); });
 
     // Init
-    var initPokemon = getParam("pokemon") || "Snorlax";
-    switchPokemon(initPokemon);
+    switchPokemon(getParam("pokemon") || "Snorlax");
     </script>
 </body>
 </html>
