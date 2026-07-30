@@ -191,7 +191,30 @@
                             if (c.tcgplayer.prices["1stEditionHolofoil"]) { variants.push("1st Ed Holo"); prices["1st Ed Holo"] = c.tcgplayer.prices["1stEditionHolofoil"].market || 0; }
                             if (c.tcgplayer.prices.unlimitedHolofoil) { variants.push("Unlimited Holo"); prices["Unlimited Holo"] = c.tcgplayer.prices.unlimitedHolofoil.market || 0; }
                         }
-                        if (variants.length === 0) { variants.push("Normal"); prices["Normal"] = 0; }
+                        
+                        // Se pokemontcg.io não listou variantes, deduz pela raridade
+                        if (variants.length === 0) {
+                            var rarity = (c.rarity || "").toLowerCase();
+                            if (rarity.indexOf("common") !== -1 || rarity.indexOf("uncommon") !== -1) {
+                                variants.push("Normal");
+                                variants.push("Reverse Holo");
+                            } else if (rarity.indexOf("holo rare") !== -1 || rarity.indexOf("rare holo") !== -1) {
+                                variants.push("Holo");
+                                variants.push("Reverse Holo");
+                            } else if (rarity.indexOf("rare") !== -1 && rarity.indexOf("holo") === -1) {
+                                variants.push("Normal");
+                                variants.push("Reverse Holo");
+                            } else {
+                                variants.push("Normal");
+                            }
+                        } else {
+                            // Garante que Common/Uncommon com só Normal também tenha Reverse Holo
+                            var rarity = (c.rarity || "").toLowerCase();
+                            if ((rarity.indexOf("common") !== -1 || rarity.indexOf("uncommon") !== -1 || rarity === "rare") && variants.indexOf("Reverse Holo") === -1) {
+                                variants.push("Reverse Holo");
+                            }
+                        }
+                        if (variants.length === 0) { variants.push("Normal"); }
 
                         var setName = c.set ? c.set.name : "";
                         var number = c.number + "/" + (c.set ? c.set.printedTotal : "?");
