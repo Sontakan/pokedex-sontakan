@@ -158,12 +158,28 @@
 
                         // Cria uma entrada para cada variante em cada idioma
                         var langs = ["en", "pt", "ja"];
+                        
+                        // Monta URL da imagem TCGdex por idioma
+                        // pokemontcg.io ID: "sv8-144", TCGdex precisa: sv/sv08/144
+                        var tcgdexSetId = c.set ? c.set.id : "";
+                        var serie = tcgdexSetId.replace(/[0-9].*/g, ""); // "sv", "swsh", "sm", etc
+                        // TCGdex usa zero-pad nos sets: sv8 -> sv08, sm10 -> sm10
+                        var tcgdexPath = serie + "/" + tcgdexSetId.replace(/^([a-z]+)(\d)$/, "$10$2") + "/" + c.number.split("/")[0];
+
                         langs.forEach(function(lang) {
+                            var imgUrl;
+                            if (lang === "en") {
+                                imgUrl = imgSmall; // pokemontcg.io imagem EN
+                            } else {
+                                // TCGdex imagem PT ou JP
+                                imgUrl = "https://assets.tcgdex.net/" + lang + "/" + tcgdexPath + "/high.webp";
+                            }
                             variants.forEach(function(v) {
                                 cards.push({
                                     id: c.id,
                                     name: c.name,
-                                    image: imgSmall,
+                                    image: imgUrl,
+                                    imageFallback: imgSmall,
                                     set_name: setName,
                                     number: number,
                                     language: lang,
@@ -269,7 +285,7 @@
 
             card.innerHTML =
                 "<div class='lang-badge lang-" + c.language + "'>" + c.language.toUpperCase() + "</div>" +
-                "<img src='" + c.image + "' loading='lazy' onerror=\"this.style.opacity='0.3'\">" +
+                "<img src='" + c.image + "' loading='lazy' onerror=\"if(this.dataset.fb){this.src=this.dataset.fb;this.dataset.fb=''}else{this.style.opacity='0.3'}\" data-fb='" + (c.imageFallback || "") + "'>" +
                 "<div class='card-info'>" +
                     "<div class='card-name'>" + c.name + "</div>" +
                     "<div class='card-set'>" + c.set_name + "</div>" +
