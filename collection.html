@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coleção Pokémon — Sontakan</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+
+        header { background: linear-gradient(135deg, #16213e 0%, #0f3460 100%); padding: 16px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+        .header-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        header h1 { font-size: 1.4em; font-weight: 700; color: #fff; }
+        .stats { font-size: 13px; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 10px; }
+        .progress-bar { background: rgba(255,255,255,0.15); border-radius: 20px; height: 10px; width: 180px; overflow: hidden; }
+        .progress-fill { background: #fbbf24; height: 100%; border-radius: 20px; transition: width 0.5s; }
+
+        .tabs { display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 12px; flex-wrap: wrap; }
+        .tabs button { padding: 8px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; color: rgba(255,255,255,0.7); transition: all 0.2s; }
+        .tabs button.active { background: #e94560; color: white; }
+        .tabs button:hover:not(.active) { background: rgba(255,255,255,0.1); }
+
+        .controls { max-width: 1400px; margin: 16px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .search input { padding: 10px 18px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.15); font-size: 14px; width: 240px; outline: none; background: rgba(255,255,255,0.05); color: #fff; }
+        .search input:focus { border-color: #e94560; }
+        .search input::placeholder { color: rgba(255,255,255,0.4); }
+
+        .lang-filters { display: flex; gap: 6px; }
+        .lang-filters button { padding: 6px 14px; border: 2px solid rgba(255,255,255,0.2); border-radius: 20px; cursor: pointer; font-size: 12px; background: transparent; color: #ccc; font-weight: 600; transition: all 0.15s; }
+        .lang-filters button.active { background: #e94560; color: white; border-color: #e94560; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+
+        .card { background: #16213e; border-radius: 14px; padding: 10px; text-align: center; border: 2px solid rgba(255,255,255,0.08); transition: all 0.2s; position: relative; overflow: hidden; }
+        .card:hover { box-shadow: 0 8px 30px rgba(233,69,96,0.2); transform: translateY(-3px); border-color: rgba(233,69,96,0.3); }
+        .card.owned { border-color: #10b981; }
+        .card img { width: 100%; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); aspect-ratio: 5/7; object-fit: cover; background: #0f1a30; }
+        .card .card-info { margin-top: 8px; }
+        .card .card-name { font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card .card-set { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card .card-number { font-size: 9px; color: rgba(255,255,255,0.35); }
+
+        .lang-badge { position: absolute; top: 6px; right: 6px; padding: 2px 5px; border-radius: 4px; font-size: 8px; font-weight: 700; }
+        .lang-pt { background: #16a34a; color: white; }
+        .lang-en { background: #2563eb; color: white; }
+        .lang-ja { background: #dc2626; color: white; }
+
+        .owned-check { position: absolute; top: 6px; left: 6px; font-size: 14px; background: #10b981; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+
+        .loading { text-align: center; padding: 60px; grid-column: 1/-1; color: #999; }
+        .empty { text-align: center; padding: 60px; grid-column: 1/-1; color: #666; }
+
+        .nav-links { display: flex; gap: 8px; }
+        .nav-links a { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none; color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.2); }
+        .nav-links a:hover { background: rgba(255,255,255,0.1); }
+
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 12px; }
+            header h1 { font-size: 1.1em; }
+            .tabs button { padding: 6px 10px; font-size: 11px; }
+            .header-inner { justify-content: center; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <h1 id="page-title">🃏 Coleção Snorlax</h1>
+            <div class="tabs" id="pokemon-tabs">
+                <button class="active" data-pokemon="Snorlax">Snorlax</button>
+                <button data-pokemon="Rotom">Rotom</button>
+                <button data-pokemon="Meowth">Meowth</button>
+                <button data-pokemon="Scraggy">Scraggy</button>
+            </div>
+            <div class="stats">
+                <span>✅ <strong id="stat-owned">0</strong>/<strong id="stat-total">0</strong></span>
+                <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">📋 Pokédex</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="controls">
+        <div class="search"><input type="text" id="search" placeholder="Buscar carta ou set..."></div>
+        <div class="lang-filters" id="lang-filters">
+            <button class="active" data-lang="all">Todos</button>
+            <button data-lang="pt">🇧🇷 PT</button>
+            <button data-lang="en">🇺🇸 EN</button>
+            <button data-lang="ja">🇯🇵 JP</button>
+        </div>
+    </div>
+
+    <div class="grid" id="card-grid">
+        <div class="loading">⏳ Carregando cartas...</div>
+    </div>
+
+    <script>
+    var API_URL = "https://script.google.com/macros/s/AKfycby7gxgZXmayUv_d5toh2_loA8vEJxIZ_IwiSo92c5zTA5pwSBMa_kgUPIPgUUr-5G5rtA/exec";
+    var POKEMONTCG_URL = "https://api.pokemontcg.io/v2/cards";
+
+    var currentPokemon = "Snorlax";
+    var currentLang = "all";
+    var allCards = [];
+    var ownedCards = {};
+
+    // Busca nomes (para pokemontcg.io que é só EN, usamos nome EN)
+    // Para PT e JP usamos TCGdex com filtro client-side
+    var POKEMON_SEARCH = {
+        "Snorlax": { en: "snorlax", pt: ["Snorlax", "Snorlax ex", "Snorlax-GX", "Snorlax V", "Snorlax VMAX"], ja: ["カビゴン"] },
+        "Rotom": { en: "rotom", pt: ["Rotom"], ja: ["ロトム"] },
+        "Meowth": { en: "meowth", pt: ["Meowth"], ja: ["ニャース"] },
+        "Scraggy": { en: "scraggy", pt: ["Scraggy"], ja: ["ズルッグ"] }
+    };
+
+    // Usa pokemontcg.io para inglês (tem filtro por nome e variantes)
+    async function fetchEnglishCards(pokemon) {
+        var cards = [];
+        var name = POKEMON_SEARCH[pokemon].en;
+        var page = 1;
+        var hasMore = true;
+        while (hasMore) {
+            try {
+                var resp = await fetch(POKEMONTCG_URL + "?q=name:" + name + "&page=" + page + "&pageSize=250&orderBy=set.releaseDate");
+                var data = await resp.json();
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(function(c) {
+                        cards.push({
+                            id: c.id,
+                            name: c.name,
+                            image: c.images ? c.images.small : "",
+                            set_name: c.set ? c.set.name : "",
+                            number: c.number + "/" + (c.set ? c.set.printedTotal : "?"),
+                            language: "en",
+                            variants: getVariantsFromTcgPlayer(c)
+                        });
+                    });
+                    if (data.data.length < 250) hasMore = false;
+                    else page++;
+                } else {
+                    hasMore = false;
+                }
+            } catch(e) { console.error(e); hasMore = false; }
+        }
+        return cards;
+    }
+
+    function getVariantsFromTcgPlayer(card) {
+        var variants = [];
+        if (card.tcgplayer && card.tcgplayer.prices) {
+            var prices = card.tcgplayer.prices;
+            if (prices.normal) variants.push("Normal");
+            if (prices.holofoil) variants.push("Holo");
+            if (prices.reverseHolofoil) variants.push("Reverse Holo");
+            if (prices["1stEditionNormal"]) variants.push("1st Edition");
+            if (prices["1stEditionHolofoil"]) variants.push("1st Ed Holo");
+        }
+        if (variants.length === 0) variants.push("Normal");
+        return variants;
+    }
+
+    // Para PT e JP: usa os mesmos IDs do EN e monta URLs da TCGdex
+    function buildTcgdexCards(enCards, lang) {
+        var cards = [];
+        enCards.forEach(function(c) {
+            // Monta URL da imagem TCGdex: https://assets.tcgdex.net/{lang}/{serie}/{set}/{number}
+            // O ID no pokemontcg.io é tipo "swsh4-131", na TCGdex seria similar
+            var tcgdexImage = "https://assets.tcgdex.net/" + lang + "/" + c.id.replace("-", "/").replace(/([a-z]+)(\d)/, "$1/$2") + "/high.webp";
+            
+            // Tentativa mais simples: usar a imagem EN mesmo (muitas cartas PT/JP não tem na TCGdex)
+            cards.push({
+                id: c.id + "-" + lang,
+                name: c.name,
+                image: c.image, // Usa imagem EN como fallback
+                set_name: c.set_name,
+                number: c.number,
+                language: lang,
+                variants: c.variants
+            });
+        });
+        return cards;
+    }
+
+    async function loadOwned(pokemon) {
+        ownedCards = {};
+        try {
+            var resp = await fetch(API_URL + "?tab=" + encodeURIComponent(pokemon));
+            var data = await resp.json();
+            if (Array.isArray(data)) {
+                data.forEach(function(item) {
+                    if (item.owned) {
+                        ownedCards[item.card_id + "|" + item.variant] = true;
+                    }
+                });
+            }
+        } catch(e) { console.error("Erro owned:", e); }
+    }
+
+    function renderGrid() {
+        var grid = document.getElementById("card-grid");
+        grid.innerHTML = "";
+
+        var search = document.getElementById("search").value.toLowerCase();
+        var filtered = allCards.filter(function(c) {
+            if (currentLang !== "all" && c.language !== currentLang) return false;
+            if (search) {
+                var match = c.name.toLowerCase().indexOf(search) !== -1 ||
+                    c.set_name.toLowerCase().indexOf(search) !== -1 ||
+                    c.id.toLowerCase().indexOf(search) !== -1;
+                if (!match) return false;
+            }
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = "<div class='empty'>Nenhuma carta encontrada</div>";
+            updateStats(filtered);
+            return;
+        }
+
+        filtered.forEach(function(c) {
+            var key = c.id + "|Normal";
+            var isOwned = ownedCards[key];
+
+            var card = document.createElement("div");
+            card.className = "card" + (isOwned ? " owned" : "");
+            card.innerHTML =
+                (isOwned ? "<div class='owned-check'>✓</div>" : "") +
+                "<div class='lang-badge lang-" + c.language + "'>" + c.language.toUpperCase() + "</div>" +
+                "<img src='" + c.image + "' loading='lazy' onerror=\"this.style.display='none'\">" +
+                "<div class='card-info'>" +
+                    "<div class='card-name'>" + c.name + "</div>" +
+                    "<div class='card-set'>" + c.set_name + "</div>" +
+                    "<div class='card-number'>" + c.number + "</div>" +
+                "</div>";
+            grid.appendChild(card);
+        });
+
+        updateStats(filtered);
+    }
+
+    function updateStats() {
+        var total = allCards.length;
+        var owned = Object.keys(ownedCards).length;
+        document.getElementById("stat-owned").textContent = owned;
+        document.getElementById("stat-total").textContent = total;
+        var pct = total > 0 ? ((owned / total) * 100).toFixed(1) : 0;
+        document.getElementById("progress-fill").style.width = pct + "%";
+    }
+
+    async function switchPokemon(pokemon) {
+        currentPokemon = pokemon;
+        document.getElementById("page-title").textContent = "🃏 Coleção " + pokemon;
+        document.getElementById("card-grid").innerHTML = "<div class='loading'>⏳ Carregando cartas de " + pokemon + "...</div>";
+
+        document.querySelectorAll(".tabs button").forEach(function(b) { b.classList.remove("active"); });
+        var btn = document.querySelector('[data-pokemon="' + pokemon + '"]');
+        if (btn) btn.classList.add("active");
+
+        allCards = [];
+
+        // Busca EN via pokemontcg.io
+        var enCards = await fetchEnglishCards(pokemon);
+        allCards = allCards.concat(enCards);
+
+        // Para PT e JP: cria entradas baseadas nas cartas EN
+        var ptCards = buildTcgdexCards(enCards, "pt");
+        allCards = allCards.concat(ptCards);
+
+        var jaCards = buildTcgdexCards(enCards, "ja");
+        allCards = allCards.concat(jaCards);
+
+        await loadOwned(pokemon);
+        renderGrid();
+    }
+
+    // URL params
+    function getParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+
+    // Event listeners
+    document.querySelectorAll(".tabs button").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            switchPokemon(this.dataset.pokemon);
+            history.replaceState(null, "", "?pokemon=" + this.dataset.pokemon);
+        });
+    });
+
+    document.querySelectorAll(".lang-filters button").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            currentLang = this.dataset.lang;
+            document.querySelectorAll(".lang-filters button").forEach(function(b) { b.classList.remove("active"); });
+            this.classList.add("active");
+            renderGrid();
+        });
+    });
+
+    document.getElementById("search").addEventListener("input", function() { renderGrid(); });
+
+    // Init
+    var initPokemon = getParam("pokemon") || "Snorlax";
+    switchPokemon(initPokemon);
+    </script>
+</body>
+</html>
